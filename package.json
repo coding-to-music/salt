@@ -1,0 +1,12 @@
+{
+  "name": "salt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:coding-to-music/salt.git",
+  "author": "coding-to-music <connors.tom@gmail.com>",
+  "scripts": {
+    "mydeploy": "git add . && git commit -m Build && git push",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT"
+}
