@@ -1,7 +1,6 @@
 influxdb_v2_upgrade:
   pkg.latest:
-    - name: influxdb
-    - version: 2.*
+    - name: influxdb2
     - refresh: True
 
 influxdb_v2_service_restart:
