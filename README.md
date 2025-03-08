@@ -24,6 +24,18 @@ git remote add origin git@github.com:coding-to-music/salt.git
 git push -u origin main
 ```
 
+## Grafana
+
+Manual Grafana Install
+
+```java
+# Import the GPG key
+sudo mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+
+
+```
+
 ## InfluxDB
 
 Add the GPG Key for InfluxDB, Download the GPG Key:
