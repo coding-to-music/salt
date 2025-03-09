@@ -94,7 +94,7 @@ git push -u origin main
     - [ ] Grafana Dashboard(s)
 - [ ] Redis
     - [ ] Grafana Dashboard(s)
-- [ ] k3s or MicroK8s
+- [ ] k3s 
     - [ ] Grafana Dashboard(s)
 - [X] influxDB
     - [ ] influxDB Grafana Dashboard(s)
@@ -116,9 +116,13 @@ https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
 
 https://github.com/coding-to-music/using-fail2ban-to-harden-linux-server
 
-## MicroK8s
+## k3s
 
-https://microk8s.io/?_gl=1*vqfb35*_gcl_au*MTU0NjY4NTgwMi4xNzM5ODIyNTg0
+https://docs.k3s.io/installation
+
+https://computingforgeeks.com/installing-k3s-on-ubuntu-noble-numbat/
+
+https://docs.k3s.io/installation/requirements?os=debian
 
 Manual Install
 
@@ -183,12 +187,13 @@ https://redis.io/docs/latest/operate/redisinsight/install/
 
 ## Supabase
 
-Manual Install
+https://supabase.com/docs/guides/self-hosting
 
-```java
-```
+https://supabase.com/docs/guides/self-hosting/docker
 
-## Postgresql
+https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux
+
+https://supabase.com/docs/guides/local-development?queryGroups=package-manager&package-manager=yarn
 
 Manual Install
 
@@ -196,6 +201,42 @@ Manual Install
 ```
 
 ## MongoDB
+
+https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
+
+Manual Install
+
+```java
+# Import the public key
+sudo apt-get install gnupg curl
+
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
+
+# Create the list file.
+# Create the list file /etc/apt/sources.list.d/mongodb-org-8.0.list for your version of Ubuntu.
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list   
+
+sudo apt-get update
+
+sudo apt-get install -y mongodb-org
+
+# check version
+mongod --version
+```
+
+https://www.mongodb.com/docs/manual/tutorial/getting-started/#std-label-getting-started
+
+https://www.mongodb.com/docs/mongodb-shell/
+
+https://idroot.us/install-mongodb-ubuntu-24-04/
+
+https://www.cherryservers.com/blog/install-mongodb-ubuntu-2404#step-6-create-mongodb-admin-user
+
+https://www.cherryservers.com/blog/install-mongodb-ubuntu-2404#step-7-securing-mongodb
+
+## Postgresql
 
 Manual Install
 
