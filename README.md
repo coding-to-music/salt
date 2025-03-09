@@ -79,6 +79,8 @@ git push -u origin main
 - [ ] Grafana 
     - [ ] Dashboards
     - [ ] Grafana Auth
+    - [ ] Data Sources
+    - [ ] Users
 - [ ] Webserver
     - [X] apache2
     - [X] nginx
@@ -95,6 +97,11 @@ git push -u origin main
 - [ ] Redis
     - [ ] Grafana Dashboard(s)
 - [ ] k3s 
+    - [ ] Grafana Dashboard(s)
+- [ ] Payload CMS 
+    - [ ] Node 20.9.0+
+    - [ ] pnpm
+    - [ ] Users / Auth
     - [ ] Grafana Dashboard(s)
 - [X] influxDB
     - [ ] influxDB Grafana Dashboard(s)
@@ -236,27 +243,6 @@ https://www.cherryservers.com/blog/install-mongodb-ubuntu-2404#step-6-create-mon
 
 https://www.cherryservers.com/blog/install-mongodb-ubuntu-2404#step-7-securing-mongodb
 
-## Postgresql
-
-Manual Install
-
-```java
-```
-
-## Kafka
-
-Manual Install
-
-```java
-```
-
-## Python Application
-
-Manual Install
-
-```java
-```
-
 ## Grafana
 
 Manual Grafana Install
@@ -378,5 +364,82 @@ Upgrade Nginx:
 
 ```java
 sudo salt '*' state.apply webserver.nginx.upgrade
+```
+
+## Payload CMS
+
+https://payloadcms.com/docs/getting-started/installation
+
+https://payloadcms.com/docs/getting-started/what-is-payload
+
+Create new Payload CMS app
+
+https://www.npmjs.com/package/create-payload-app
+
+```java
+
+create-payload-app
+
+  USAGE
+
+      $ npx create-payload-app
+      $ npx create-payload-app my-project
+      $ npx create-payload-app -n my-project -t website
+
+  OPTIONS
+
+      -n     my-payload-app         Set project name
+      -t     template_name          Choose specific template
+
+        Available templates:
+
+        blank                       Blank Template
+        website                     Website Template
+        ecommerce                   E-commerce Template
+        plugin                      Template for creating a Payload plugin
+        payload-demo                Payload demo site at https://demo.payloadcms.com
+        payload-website             Payload website CMS at https://payloadcms.com
+
+      --use-npm                     Use npm to install dependencies
+      --use-yarn                    Use yarn to install dependencies
+      --use-pnpm                    Use pnpm to install dependencies
+      --no-deps                     Do not install any dependencies
+      -h                            Show help
+```
+
+Next, install a Database Adapter. Payload requires a Database Adapter to establish a database connection. Payload works with all types of databases, but the most common are MongoDB and Postgres.
+
+To install a Database Adapter, you can run one of the following commands:
+
+To install the MongoDB Adapter, run:
+```java
+pnpm i @payloadcms/db-mongodb
+```
+
+To install the Postgres Adapter, run:
+
+```java
+pnpm i @payloadcms/db-postgres
+```
+
+## Postgresql
+
+Manual Install
+
+```java
+```
+
+## Kafka
+
+Manual Install
+
+```java
+```
+
+## Python Application
+
+Manual Install
+
+```java
 ```
 
