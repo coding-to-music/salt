@@ -424,10 +424,93 @@ pnpm i @payloadcms/db-postgres
 
 ## Postgresql
 
+https://www.cherryservers.com/blog/install-postgresql-ubuntu
+
 Manual Install
 
+First download curl, ca-certificates, pip, venv, and libpq-dev
+
 ```java
+sudo apt-get install curl ca-certificates python3-pip python3-venv libpq-dev -y
 ```
+
+```java
+curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc -fail  https://www.postgresql.org/media/keys/ACCC4CF8.asc
+```
+
+To determine the codename of your Ubuntu release type:
+
+```java
+lsb_release -cs
+```
+
+Create the sources list for the PostgreSQL package with the help of the nano editor.
+
+```java
+sudo nano /etc/apt/sources.list.d/pgdg.list
+```
+
+Write the source code as shown below.
+
+```java
+deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt  noble-pgdg main
+```
+
+Instead of noble, you should put the codename of your distribution which you found out via the lsb_release command. Write to the file with the help of Control O. Type Enter and then exit the nano text editor with Control X.
+
+You can use ls to verify the pgdg.list has been added.
+
+Step 2: Install PostgreSQL on Ubuntu 24.04 LTS
+
+```java
+sudo apt-get update
+
+sudo apt-get install postgresql -y
+```
+
+View running status 
+
+```java
+systemctl status postgresql
+```
+
+Step 3: Log into PostgreSQL
+
+PostgreSQL creates a default user named postgres. The postgres user is a superuser, which means that this role has all the privileges one can have inside the PostgreSQL DBMS.
+
+To log into the database server as the user postgres type:
+
+```java
+sudo -u postgres psql
+```
+
+The superuser postgres doesn’t have a default password. Before going any further you should create one as without it your PostgreSQL database server may become an easy target for cybercriminals once you expose the DBMS to accept remote connections.
+
+To create a password for the postgres user type the following command on the PostgeSQL’s console.
+
+```java
+\password postgres
+```
+
+To update the password for the postgres user from the PostgreSQL console type:
+
+```java
+ALTER USER postgres WITH PASSWORD ‘new_password_here’;
+```
+
+To exit the PostgreSQL console type:
+
+```java
+\q
+# or
+exit
+```
+
+Step 4: Configure PostgreSQL
+
+Many more options to be set, see
+
+https://www.cherryservers.com/blog/install-postgresql-ubuntu
 
 ## Kafka
 
