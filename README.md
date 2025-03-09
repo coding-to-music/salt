@@ -24,9 +24,160 @@ git remote add origin git@github.com:coding-to-music/salt.git
 git push -u origin main
 ```
 
+## Overall task list
+
+### Server basic setup
+
+- [ ] set hostname
+- [ ] set time zone to NYC
+- [ ] remote mount a drive
+- [ ] setup drive rsync
+
+### Users
+
+- [ ] install ssh keys
+- [ ] disable root login
+- [ ] create user for myself
+- [ ] .bash_aliases for myself
+- [ ] sudo for myself
+- [ ] create user docker
+- [ ] create user grafana
+
+### cli Software
+
+- [ ] github git
+- [ ] gh github login
+- [ ] vercel
+- [ ] cloudflare
+
+### systemctl processes
+
+- [ ] node-exporter
+- [ ] grafana alloy
+- [ ] ufw firewall
+- [ ] docker
+- [ ] fail2ban
+
+### environment software
+
+- [ ] nvm
+- [ ] node
+- [ ] yarn
+- [ ] pnpm
+- [ ] deno
+- [ ] pyenv
+- [ ] python3
+
+### Salt-Stack
+- [ ] Pillars
+- [ ] Grains
+- [ ] Hashicorp Vault
+
+
+### databases & more
+
+- [ ] Grafana 
+    - [ ] Dashboards
+    - [ ] Grafana Auth
+- [ ] Webserver
+    - [X] apache2
+    - [X] nginx
+    - [ ] Demo website
+    - [ ] https certificate
+- [ ] postgresql
+    - [ ] Grafana Dashboard(s)
+- [ ] supabase
+    - [ ] Grafana Dashboard(s)
+- [ ] mongoDB
+    - [ ] Grafana Dashboard(s)
+- [ ] kafka
+    - [ ] Grafana Dashboard(s)
+- [ ] k3s or MicroK8s
+    - [ ] Grafana Dashboard(s)
+- [X] influxDB
+    - [ ] influxDB Grafana Dashboard(s)
+- [ ] Python Application
+    - [ ] CPU Memory Disk Processes Grafana Dashboard(s)
+    - [ ] Distribute via apt package
+
+## Backup hard drive
+
+- [ ] rsync
+
+### Other related repos for setups and installation
+
+https://github.com/coding-to-music/saltstack-salt-in-10-minutes
+
+https://github.com/coding-to-music/setup-linux-server-rsync-data-from-old-server
+
+https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
+
+https://github.com/coding-to-music/using-fail2ban-to-harden-linux-server
+
+## MicroK8s
+
+https://microk8s.io/?_gl=1*vqfb35*_gcl_au*MTU0NjY4NTgwMi4xNzM5ODIyNTg0
+
+Manual Install
+
+```java
+```
+
+## Hashicorp Vault
+
+https://portal.cloud.hashicorp.com/sign-in
+
+https://developer.hashicorp.com/hcp/tutorials
+
+https://developer.hashicorp.com/hcp/docs/vault-secrets/get-started/plan-implementation/tiers-features
+
+Manual Install
+
+https://developer.hashicorp.com/hcp/tutorials/get-started-hcp-vault-secrets/hcp-vault-secrets-install-cli
+
+```java
+```
+
+## Supabase
+
+Manual Install
+
+```java
+```
+
+## Postgresql
+
+Manual Install
+
+```java
+```
+
+## MongoDB
+
+Manual Install
+
+```java
+```
+
+## Kafka
+
+Manual Install
+
+```java
+```
+
+## Python Application
+
+Manual Install
+
+```java
+```
+
 ## Grafana
 
 Manual Grafana Install
+
+https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
 
 ```java
 # Import the GPG key
