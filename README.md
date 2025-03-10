@@ -24,6 +24,42 @@ git remote add origin git@github.com:coding-to-music/salt.git
 git push -u origin main
 ```
 
+## Useful commands
+
+```java
+sudo salt-run fileserver.update
+sudo salt-run fileserver.file_list
+sudo salt-run fileserver.file_list | grep '.sls'
+
+sudo systemctl restart salt-master
+sudo systemctl status salt-master
+
+sudo journalctl -xeu salt-master.service
+sudo journalctl -u salt-master
+sudo tail -f /var/log/salt/master
+
+sudo systemctl restart salt-minion
+sudo systemctl status salt-minion
+
+sudo journalctl -xeu salt-minion.service
+sudo journalctl -u salt-minion
+sudo tail -f /var/log/salt/minion
+```
+
+## accept keys so the master and minions see each other
+
+list accepted keys
+
+```java
+sudo salt-key -L
+```
+
+remove keys from a minion
+
+```java
+sudo salt-key -d minion_name
+```
+
 ## Overall task list
 
 ### Server basic setup
@@ -81,16 +117,23 @@ git push -u origin main
     - [ ] Grafana Auth
     - [ ] Data Sources
     - [ ] Users
-- [ ] Beyla
-    - [ ] Grafana Cloud Beyla
-    - [ ] Alloy Collector
 - [ ] Webserver
     - [X] apache2
+        - [ ] Demo website
+        - [ ] https certificate
         - [ ] Alloy Collector
+        - [ ] Grafana Dashboard(s)
     - [X] nginx
+        - [ ] Demo website
+        - [ ] https certificate
         - [ ] Alloy Collector
-    - [ ] Demo website
-    - [ ] https certificate
+        - [ ] Grafana Dashboard(s)
+- [ ] MinIO 
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
+- [X] influxDB
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
 - [ ] postgresql
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
@@ -121,14 +164,14 @@ git push -u origin main
 - [ ] Cloudflare DNS 
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
-- [ ] MinIO 
+- [ ] Beyla
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
-- [X] influxDB
-    - [ ] influxDB Grafana Dashboard(s)
 - [ ] Python Application
     - [ ] CPU Memory Disk Processes Grafana Dashboard(s)
     - [ ] Distribute via apt package
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
 
 ## Backup hard drive
 
@@ -156,6 +199,8 @@ Manual Install
 
 ```java
 ```
+
+
 
 ## Hashicorp Vault
 
