@@ -81,27 +81,48 @@ git push -u origin main
     - [ ] Grafana Auth
     - [ ] Data Sources
     - [ ] Users
+- [ ] Beyla
+    - [ ] Grafana Cloud Beyla
+    - [ ] Alloy Collector
 - [ ] Webserver
     - [X] apache2
+        - [ ] Alloy Collector
     - [X] nginx
+        - [ ] Alloy Collector
     - [ ] Demo website
     - [ ] https certificate
 - [ ] postgresql
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] supabase
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] mongoDB
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] kafka
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] Redis
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] k3s 
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
-- [ ] Payload CMS 
-    - [ ] Node 20.9.0+
-    - [ ] pnpm
-    - [ ] Users / Auth
+- [ ] Docker 
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
+- [ ] GitHub 
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
+- [ ] Cert Manager via k3s 
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
+- [ ] Cloudflare DNS 
+    - [ ] Alloy Collector
+    - [ ] Grafana Dashboard(s)
+- [ ] MinIO 
+    - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [X] influxDB
     - [ ] influxDB Grafana Dashboard(s)
@@ -511,6 +532,13 @@ Step 4: Configure PostgreSQL
 Many more options to be set, see
 
 https://www.cherryservers.com/blog/install-postgresql-ubuntu
+
+## MinIO
+
+Manual Install
+
+```java
+```
 
 ## Kafka
 
