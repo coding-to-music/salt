@@ -48,7 +48,6 @@ sudo tail -n 20 -f /var/log/salt/minion
 # view lines that do not begin with # and are not blank lines
 grep -v -e '^#' -e '^$' /etc/salt/master
 grep -v -e '^#' -e '^$' /etc/salt/minion
-
 ```
 
 ## accept keys so the master and minions see each other
@@ -63,6 +62,23 @@ remove keys from a minion
 
 ```java
 sudo salt-key -d minion_name
+```
+
+## Applying the States
+
+Apply states from the base environment:
+
+```java
+sudo salt '*' state.apply test saltenv=base
+sudo salt '*' state.apply vim saltenv=base
+sudo salt '*' state.apply timezone saltenv=base
+```
+
+Apply states from the dev environment:
+
+```java
+sudo salt '*' state.apply influxdb.v2.upgrade saltenv=dev
+sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 ```
 
 ## Overall task list
