@@ -43,7 +43,12 @@ sudo systemctl status salt-minion
 
 sudo journalctl -xeu salt-minion.service
 sudo journalctl -u salt-minion
-sudo tail -f /var/log/salt/minion
+sudo tail -n 20 -f /var/log/salt/minion
+
+# view lines that do not begin with # and are not blank lines
+grep -v -e '^#' -e '^$' /etc/salt/master
+grep -v -e '^#' -e '^$' /etc/salt/minion
+
 ```
 
 ## accept keys so the master and minions see each other
