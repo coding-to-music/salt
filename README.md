@@ -622,6 +622,12 @@ sudo salt '*' state.apply kafka.start saltenv=dev
 sudo salt '*' state.apply kafka.stop saltenv=dev
 ```
 
+Validate
+
+```java
+systemctl status confluent-server
+```
+
 ## Python Application
 
 Manual Install
