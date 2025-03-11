@@ -445,129 +445,46 @@ sudo apt-get update
 
 ```
 
-Install InfluxDB v2:
+Salt commands for InfluxDB V2
 
 ```java
 sudo salt '*' state.apply influxdb.v2.install saltenv=dev
-```
 
-Upgrade InfluxDB v2:
-
-```java
 sudo salt '*' state.apply influxdb.v2.upgrade saltenv=dev
-```
 
-View the status
-
-```java
 sudo service influxdb status
 ```
 
-Install InfluxDB v3:
+Salt commands for InfluxDB V3
 
 ```java
-sh
 sudo salt '*' state.apply influxdb.v3.install saltenv=dev
-```
 
-Upgrade InfluxDB v3:
-
-```java
 sudo salt '*' state.apply influxdb.v3.upgrade saltenv=dev
+
+sudo service influxdb status
 ```
 
 ## Webserver apache2 and nginx
 
-Install Apache2:
+Salt commands for Apache2:
 
 ```java
 sudo salt '*' state.apply webserver.apache2.install saltenv=dev
-```
 
-Uninstall Apache2:
-
-```java
 sudo salt '*' state.apply webserver.apache2.uninstall saltenv=dev
-```
 
-Upgrade Apache2:
-
-```java
 sudo salt '*' state.apply webserver.apache2.upgrade saltenv=dev
 ```
 
-Install Nginx:
+Salt commands for Nginx:
 
 ```java
 sudo salt '*' state.apply webserver.nginx.install saltenv=dev
-```
 
-Uninstall Nginx:
-
-```java
 sudo salt '*' state.apply webserver.nginx.uninstall saltenv=dev
-```
 
-Upgrade Nginx:
-
-```java
 sudo salt '*' state.apply webserver.nginx.upgrade saltenv=dev
-```
-
-## Payload CMS
-
-https://payloadcms.com/docs/getting-started/installation
-
-https://payloadcms.com/docs/getting-started/what-is-payload
-
-Create new Payload CMS app
-
-https://www.npmjs.com/package/create-payload-app
-
-```java
-
-create-payload-app
-
-  USAGE
-
-      $ npx create-payload-app
-      $ npx create-payload-app my-project
-      $ npx create-payload-app -n my-project -t website
-
-  OPTIONS
-
-      -n     my-payload-app         Set project name
-      -t     template_name          Choose specific template
-
-        Available templates:
-
-        blank                       Blank Template
-        website                     Website Template
-        ecommerce                   E-commerce Template
-        plugin                      Template for creating a Payload plugin
-        payload-demo                Payload demo site at https://demo.payloadcms.com
-        payload-website             Payload website CMS at https://payloadcms.com
-
-      --use-npm                     Use npm to install dependencies
-      --use-yarn                    Use yarn to install dependencies
-      --use-pnpm                    Use pnpm to install dependencies
-      --no-deps                     Do not install any dependencies
-      -h                            Show help
-```
-
-Next, install a Database Adapter. Payload requires a Database Adapter to establish a database connection. Payload works with all types of databases, but the most common are MongoDB and Postgres.
-
-To install a Database Adapter, you can run one of the following commands:
-
-To install the MongoDB Adapter, run:
-```java
-pnpm i @payloadcms/db-mongodb
-```
-
-To install the Postgres Adapter, run:
-
-```java
-pnpm i @payloadcms/db-postgres
 ```
 
 ## Postgresql

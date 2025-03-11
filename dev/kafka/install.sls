@@ -1,3 +1,6 @@
+include:
+  - java.openjdk-11.install
+
 kafka_repo:
   cmd.run:
     - name: |
@@ -12,7 +15,7 @@ kafka_install:
 
 kafka_service:
   service.running:
-    - name: confluent-kafka
+    - name: confluent-server
     - enable: True
     - watch:
       - pkg: kafka_install

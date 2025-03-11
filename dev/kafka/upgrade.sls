@@ -1,3 +1,6 @@
+include:
+  - java.openjdk-11.upgrade
+
 kafka_upgrade:
   pkg.latest:
     - name: confluent-platform
@@ -5,7 +8,7 @@ kafka_upgrade:
 
 kafka_service_restart:
   service.running:
-    - name: confluent-kafka
+    - name: confluent-server
     - enable: True
     - watch:
       - pkg: kafka_upgrade
