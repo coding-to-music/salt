@@ -1,6 +1,6 @@
 kafka_uninstall:
   pkg.removed:
-    - name: kafka
+    - name: confluent-platform
 
 kafka_cleanup:
   file.absent:

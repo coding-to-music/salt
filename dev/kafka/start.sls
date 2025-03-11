@@ -1,4 +1,4 @@
 kafka_service_start:
   service.running:
-    - name: kafka
+    - name: confluent-kafka
     - enable: True
