@@ -1,5 +1,15 @@
 dev:
   '*':
+    - alloy/install.sls
+    - alloy/start.sls
+    - alloy/stop.sls
+    - alloy/uninstall.sls
+    - alloy/upgrade.sls
+    - grafana/install.sls
+    - grafana/start.sls
+    - grafana/stop.sls
+    - grafana/uninstall.sls
+    - grafana/upgrade.sls
     - influxdb.v2.install
     - influxdb.v2.upgrade
     - influxdb.v2.uninstall
@@ -12,6 +22,42 @@ dev:
     - webserver.nginx.install
     - webserver.nginx.upgrade
     - webserver.nginx.uninstall
+    - k3s/install.sls
+    - k3s/start.sls
+    - k3s/stop.sls
+    - k3s/uninstall.sls
+    - k3s/upgrade.sls
+    - kafka/install.sls
+    - kafka/start.sls
+    - kafka/stop.sls
+    - kafka/uninstall.sls
+    - kafka/upgrade.sls
+    - minio/install.sls
+    - minio/start.sls
+    - minio/stop.sls
+    - minio/uninstall.sls
+    - minio/upgrade.sls
+    - mongodb/install.sls
+    - mongodb/start.sls
+    - mongodb/stop.sls
+    - mongodb/uninstall.sls
+    - mongodb/upgrade.sls
+    - postgresql/install.sls
+    - postgresql/start.sls
+    - postgresql/stop.sls
+    - postgresql/uninstall.sls
+    - postgresql/upgrade.sls
+    - redis/install.sls
+    - redis/start.sls
+    - redis/stop.sls
+    - redis/uninstall.sls
+    - redis/upgrade.sls
+    - setup_user.sls
+    - supabase/install.sls
+    - supabase/start.sls
+    - supabase/stop.sls
+    - supabase/uninstall.sls
+    - supabase/upgrade.sls    
     - install_yarn
     - setup_user
     - test
