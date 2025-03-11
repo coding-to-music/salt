@@ -354,15 +354,34 @@ sudo apt-get install grafana
 Salt commands for Grafana
 
 ```java
-sudo salt '*' state.apply kafka.install saltenv=dev
+sudo salt '*' state.apply grafana.install saltenv=dev
 
-sudo salt '*' state.apply kafka.uninstall saltenv=dev
+sudo salt '*' state.apply grafana.uninstall saltenv=dev
 
-sudo salt '*' state.apply kafka.upgrade saltenv=dev
+sudo salt '*' state.apply grafana.upgrade saltenv=dev
 
-sudo salt '*' state.apply kafka.start saltenv=dev
+sudo salt '*' state.apply grafana.start saltenv=dev
 
-sudo salt '*' state.apply kafka.stop saltenv=dev
+sudo salt '*' state.apply grafana.stop saltenv=dev
+```
+
+## Alloy
+
+Manual Alloy Install
+
+
+Salt commands for Alloy
+
+```java
+sudo salt '*' state.apply alloy.install saltenv=dev
+
+sudo salt '*' state.apply alloy.uninstall saltenv=dev
+
+sudo salt '*' state.apply alloy.upgrade saltenv=dev
+
+sudo salt '*' state.apply alloy.start saltenv=dev
+
+sudo salt '*' state.apply alloy.stop saltenv=dev
 ```
 
 ## InfluxDB
