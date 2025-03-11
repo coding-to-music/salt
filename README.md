@@ -351,6 +351,20 @@ sudo apt-get update
 sudo apt-get install grafana
 ```
 
+Salt commands for Grafana
+
+```java
+sudo salt '*' state.apply kafka.install saltenv=dev
+
+sudo salt '*' state.apply kafka.uninstall saltenv=dev
+
+sudo salt '*' state.apply kafka.upgrade saltenv=dev
+
+sudo salt '*' state.apply kafka.start saltenv=dev
+
+sudo salt '*' state.apply kafka.stop saltenv=dev
+```
+
 ## InfluxDB
 
 Add the GPG Key for InfluxDB, Download the GPG Key:
@@ -387,13 +401,13 @@ sudo apt-get update
 Install InfluxDB v2:
 
 ```java
-sudo salt '*' state.apply influxdb.v2.install
+sudo salt '*' state.apply influxdb.v2.install saltenv=dev
 ```
 
 Upgrade InfluxDB v2:
 
 ```java
-sudo salt '*' state.apply influxdb.v2.upgrade
+sudo salt '*' state.apply influxdb.v2.upgrade saltenv=dev
 ```
 
 View the status
@@ -406,13 +420,13 @@ Install InfluxDB v3:
 
 ```java
 sh
-sudo salt '*' state.apply influxdb.v3.install
+sudo salt '*' state.apply influxdb.v3.install saltenv=dev
 ```
 
 Upgrade InfluxDB v3:
 
 ```java
-sudo salt '*' state.apply influxdb.v3.upgrade
+sudo salt '*' state.apply influxdb.v3.upgrade saltenv=dev
 ```
 
 ## Webserver apache2 and nginx
@@ -420,37 +434,37 @@ sudo salt '*' state.apply influxdb.v3.upgrade
 Install Apache2:
 
 ```java
-sudo salt '*' state.apply webserver.apache2.install
+sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 ```
 
 Uninstall Apache2:
 
 ```java
-sudo salt '*' state.apply webserver.apache2.uninstall
+sudo salt '*' state.apply webserver.apache2.uninstall saltenv=dev
 ```
 
 Upgrade Apache2:
 
 ```java
-sudo salt '*' state.apply webserver.apache2.upgrade
+sudo salt '*' state.apply webserver.apache2.upgrade saltenv=dev
 ```
 
 Install Nginx:
 
 ```java
-sudo salt '*' state.apply webserver.nginx.install
+sudo salt '*' state.apply webserver.nginx.install saltenv=dev
 ```
 
 Uninstall Nginx:
 
 ```java
-sudo salt '*' state.apply webserver.nginx.uninstall
+sudo salt '*' state.apply webserver.nginx.uninstall saltenv=dev
 ```
 
 Upgrade Nginx:
 
 ```java
-sudo salt '*' state.apply webserver.nginx.upgrade
+sudo salt '*' state.apply webserver.nginx.upgrade saltenv=dev
 ```
 
 ## Payload CMS
