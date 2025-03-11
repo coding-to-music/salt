@@ -279,6 +279,20 @@ https://redis.io/docs/latest/develop/tools/insight/
 
 https://redis.io/docs/latest/operate/redisinsight/install/
 
+Salt commands for Redis
+
+```java
+sudo salt '*' state.apply redis.install saltenv=dev
+
+sudo salt '*' state.apply redis.uninstall saltenv=dev
+
+sudo salt '*' state.apply redis.upgrade saltenv=dev
+
+sudo salt '*' state.apply redis.start saltenv=dev
+
+sudo salt '*' state.apply redis.stop saltenv=dev
+```
+
 ## Supabase
 
 https://supabase.com/docs/guides/self-hosting
@@ -329,6 +343,20 @@ https://idroot.us/install-mongodb-ubuntu-24-04/
 https://www.cherryservers.com/blog/install-mongodb-ubuntu-2404#step-6-create-mongodb-admin-user
 
 https://www.cherryservers.com/blog/install-mongodb-ubuntu-2404#step-7-securing-mongodb
+
+Salt commands for MongoDB
+
+```java
+sudo salt '*' state.apply mongodb.install saltenv=dev
+
+sudo salt '*' state.apply mongodb.uninstall saltenv=dev
+
+sudo salt '*' state.apply mongodb.upgrade saltenv=dev
+
+sudo salt '*' state.apply mongodb.start saltenv=dev
+
+sudo salt '*' state.apply mongodb.stop saltenv=dev
+```
 
 ## Grafana
 
