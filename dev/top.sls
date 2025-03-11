@@ -16,12 +16,8 @@ dev:
     - influxdb.v3.install
     - influxdb.v3.upgrade
     - influxdb.v3.uninstall
-    - webserver.apache2.install
-    - webserver.apache2.upgrade
-    - webserver.apache2.uninstall
-    - webserver.nginx.install
-    - webserver.nginx.upgrade
-    - webserver.nginx.uninstall
+    - java/openjdk-11/install.sls
+    - java/openjdk-11/upgrade.sls
     - k3s/install.sls
     - k3s/start.sls
     - k3s/stop.sls
@@ -58,6 +54,12 @@ dev:
     - supabase/stop.sls
     - supabase/uninstall.sls
     - supabase/upgrade.sls    
+    - webserver.apache2.install
+    - webserver.apache2.upgrade
+    - webserver.apache2.uninstall
+    - webserver.nginx.install
+    - webserver.nginx.upgrade
+    - webserver.nginx.uninstall
     - install_yarn
     - setup_user
     - test

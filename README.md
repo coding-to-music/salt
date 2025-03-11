@@ -31,6 +31,8 @@ sudo salt-run fileserver.update
 sudo salt-run fileserver.file_list
 sudo salt-run fileserver.file_list | grep '.sls'
 
+sudo salt-run fileserver.file_list | grep '.sls' | grep java
+
 sudo systemctl restart salt-master
 sudo systemctl status salt-master
 
@@ -582,6 +584,21 @@ https://www.cherryservers.com/blog/install-postgresql-ubuntu
 Manual Install
 
 ```java
+```
+
+## Java
+
+Manual Install
+
+```java
+```
+
+Salt commands for Java
+
+```java
+sudo salt '*' state.apply java.openjdk-11.install saltenv=dev
+
+sudo salt '*' state.apply java.openjdk-11.upgrade saltenv=dev
 ```
 
 ## Kafka
