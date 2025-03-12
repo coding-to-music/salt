@@ -432,6 +432,8 @@ sudo apt-get update
 sudo apt-get install k6
 ```
 
+Runs as an executable when you want to load test, does not run as a service, thus there is no start and stop sls files
+
 Salt commands for K6
 
 ```java
@@ -440,10 +442,6 @@ sudo salt '*' state.apply grafana_k6.install saltenv=dev
 sudo salt '*' state.apply grafana_k6.uninstall saltenv=dev
 
 sudo salt '*' state.apply grafana_k6.upgrade saltenv=dev
-
-sudo salt '*' state.apply grafana_k6.start saltenv=dev
-
-sudo salt '*' state.apply grafana_k6.stop saltenv=dev
 ```
 
 ## Grafana Loki

@@ -14,10 +14,3 @@ k6_repo:
 k6_install:
   pkg.installed:
     - name: k6
-
-k6_service:
-  service.running:
-    - name: k6
-    - enable: True
-    - watch:
-      - pkg: k6_install
