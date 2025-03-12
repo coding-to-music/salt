@@ -140,6 +140,10 @@ sudo salt '*' state.apply webserver.apache2.install saltenv=dev
     - [ ] Grafana Auth
     - [ ] Data Sources
     - [ ] Users
+- [ ] Grafana Loki
+- [ ] Grafana Tempo
+- [ ] Grafana Mimir
+- [ ] Grafana k6
 - [ ] Webserver
     - [X] apache2
         - [ ] Demo website
@@ -395,7 +399,7 @@ sudo salt '*' state.apply grafana.start saltenv=dev
 sudo salt '*' state.apply grafana.stop saltenv=dev
 ```
 
-## Alloy
+## Grafana Alloy
 
 Manual Alloy Install
 
@@ -403,15 +407,104 @@ Manual Alloy Install
 Salt commands for Alloy
 
 ```java
-sudo salt '*' state.apply alloy.install saltenv=dev
+sudo salt '*' state.apply grafana_alloy.install saltenv=dev
 
-sudo salt '*' state.apply alloy.uninstall saltenv=dev
+sudo salt '*' state.apply grafana_alloy.uninstall saltenv=dev
 
-sudo salt '*' state.apply alloy.upgrade saltenv=dev
+sudo salt '*' state.apply grafana_alloy.upgrade saltenv=dev
 
-sudo salt '*' state.apply alloy.start saltenv=dev
+sudo salt '*' state.apply grafana_alloy.start saltenv=dev
 
-sudo salt '*' state.apply alloy.stop saltenv=dev
+sudo salt '*' state.apply grafana_alloy.stop saltenv=dev
+```
+
+## Grafana K6
+
+https://grafana.com/docs/k6/latest/set-up/install-k6/#linux
+
+Manual K6 Install
+
+```java
+sudo gpg -k
+sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt-get update
+sudo apt-get install k6
+```
+
+Salt commands for K6
+
+```java
+sudo salt '*' state.apply grafana_k6.install saltenv=dev
+
+sudo salt '*' state.apply grafana_k6.uninstall saltenv=dev
+
+sudo salt '*' state.apply grafana_k6.upgrade saltenv=dev
+
+sudo salt '*' state.apply grafana_k6.start saltenv=dev
+
+sudo salt '*' state.apply grafana_k6.stop saltenv=dev
+```
+
+## Grafana Loki
+
+Manual Loki Install
+
+
+Salt commands for Loki
+
+```java
+sudo salt '*' state.apply grafana_loki.install saltenv=dev
+
+sudo salt '*' state.apply grafana_loki.uninstall saltenv=dev
+
+sudo salt '*' state.apply grafana_loki.upgrade saltenv=dev
+
+sudo salt '*' state.apply grafana_loki.start saltenv=dev
+
+sudo salt '*' state.apply grafana_loki.stop saltenv=dev
+```
+
+## Grafana Mimir
+
+https://grafana.com/docs/mimir/latest/get-started/
+
+Manual Mimir Install
+
+
+Salt commands for Mimir
+
+```java
+sudo salt '*' state.apply grafana_mimir.install saltenv=dev
+
+sudo salt '*' state.apply grafana_mimir.uninstall saltenv=dev
+
+sudo salt '*' state.apply grafana_mimir.upgrade saltenv=dev
+
+sudo salt '*' state.apply grafana_mimir.start saltenv=dev
+
+sudo salt '*' state.apply grafana_mimir.stop saltenv=dev
+```
+
+## Grafana Tempo
+
+https://grafana.com/docs/tempo/latest/setup/linux/
+
+Manual Tempo Install
+
+
+Salt commands for Tempo
+
+```java
+sudo salt '*' state.apply grafana_tempo.install saltenv=dev
+
+sudo salt '*' state.apply grafana_tempo.uninstall saltenv=dev
+
+sudo salt '*' state.apply grafana_tempo.upgrade saltenv=dev
+
+sudo salt '*' state.apply grafana_tempo.start saltenv=dev
+
+sudo salt '*' state.apply grafana_tempo.stop saltenv=dev
 ```
 
 ## InfluxDB
