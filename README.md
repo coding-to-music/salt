@@ -446,8 +446,14 @@ sudo salt '*' state.apply grafana_k6.upgrade saltenv=dev
 
 ## Grafana Loki
 
+https://grafana.com/docs/loki/latest/setup/install/local/
+
 Manual Loki Install
 
+```java
+apt-get update
+apt-get install loki promtail
+```
 
 Salt commands for Loki
 
