@@ -1,9 +1,6 @@
 k3s_upgrade:
   cmd.run:
-    - name: |
-        curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--flannel-backend=none" sh -
-    - require:
-      - cmd: k3s_install
+    - name: curl -sfL https://get.k3s.io | sh -
 
 k3s_service_restart:
   service.running:

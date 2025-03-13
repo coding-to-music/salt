@@ -1,66 +1,87 @@
 dev:
   '*':
-    - alloy/install.sls
-    - alloy/start.sls
-    - alloy/stop.sls
-    - alloy/uninstall.sls
-    - alloy/upgrade.sls
-    - grafana/install.sls
-    - grafana/start.sls
-    - grafana/stop.sls
-    - grafana/uninstall.sls
-    - grafana/upgrade.sls
-    - influxdb.v2.install
-    - influxdb.v2.upgrade
-    - influxdb.v2.uninstall
-    - influxdb.v3.install
-    - influxdb.v3.upgrade
-    - influxdb.v3.uninstall
-    - java/openjdk-11/install.sls
-    - java/openjdk-11/upgrade.sls
-    - k3s/install.sls
-    - k3s/start.sls
-    - k3s/stop.sls
-    - k3s/uninstall.sls
-    - k3s/upgrade.sls
-    - kafka/install.sls
-    - kafka/start.sls
-    - kafka/stop.sls
-    - kafka/uninstall.sls
-    - kafka/upgrade.sls
-    - minio/install.sls
-    - minio/start.sls
-    - minio/stop.sls
-    - minio/uninstall.sls
-    - minio/upgrade.sls
-    - mongodb/install.sls
-    - mongodb/start.sls
-    - mongodb/stop.sls
-    - mongodb/uninstall.sls
-    - mongodb/upgrade.sls
-    - postgresql/install.sls
-    - postgresql/start.sls
-    - postgresql/stop.sls
-    - postgresql/uninstall.sls
-    - postgresql/upgrade.sls
-    - redis/install.sls
-    - redis/start.sls
-    - redis/stop.sls
-    - redis/uninstall.sls
-    - redis/upgrade.sls
-    - setup_user.sls
-    - supabase/install.sls
-    - supabase/start.sls
-    - supabase/stop.sls
-    - supabase/uninstall.sls
-    - supabase/upgrade.sls    
-    - webserver.apache2.install
-    - webserver.apache2.upgrade
-    - webserver.apache2.uninstall
-    - webserver.nginx.install
-    - webserver.nginx.upgrade
-    - webserver.nginx.uninstall
-    - install_yarn
-    - setup_user
-    - test
-    - timezone
+- grafana/install.sls
+- grafana/start.sls
+- grafana/stop.sls
+- grafana/uninstall.sls
+- grafana/upgrade.sls
+- grafana_alloy/install.sls
+- grafana_alloy/start.sls
+- grafana_alloy/stop.sls
+- grafana_alloy/uninstall.sls
+- grafana_alloy/upgrade.sls
+- grafana_k6/install.sls
+- grafana_k6/uninstall.sls
+- grafana_k6/upgrade.sls
+- grafana_loki/install.sls
+- grafana_loki/start.sls
+- grafana_loki/stop.sls
+- grafana_loki/uninstall.sls
+- grafana_loki/upgrade.sls
+- grafana_mimir/install.sls
+- grafana_mimir/start.sls
+- grafana_mimir/stop.sls
+- grafana_mimir/uninstall.sls
+- grafana_mimir/upgrade.sls
+- grafana_tempo/install.sls
+- grafana_tempo/start.sls
+- grafana_tempo/stop.sls
+- grafana_tempo/uninstall.sls
+- grafana_tempo/upgrade.sls
+- influxdb/v2/install.sls
+- influxdb/v2/uninstall.sls
+- influxdb/v2/upgrade.sls
+- influxdb/v3/install.sls
+- influxdb/v3/upgrade.sls
+- install_yarn.sls
+- java/openjdk-11/install.sls
+- java/openjdk-11/upgrade.sls
+- k3s/install.sls
+- k3s/start.sls
+- k3s/stop.sls
+- k3s/uninstall.sls
+- k3s/upgrade.sls
+- kafka/install.sls
+- kafka/start.sls
+- kafka/stop.sls
+- kafka/uninstall.sls
+- kafka/upgrade.sls
+- minio/install.sls
+- minio/start.sls
+- minio/stop.sls
+- minio/uninstall.sls
+- minio/upgrade.sls
+- mongodb/install.sls
+- mongodb/start.sls
+- mongodb/stop.sls
+- mongodb/uninstall.sls
+- mongodb/upgrade.sls
+- non_root_node_yarn_pnpm/install.sls
+- non_root_node_yarn_pnpm/upgrade.sls
+- postgresql/install.sls
+- postgresql/start.sls
+- postgresql/stop.sls
+- postgresql/uninstall.sls
+- postgresql/upgrade.sls
+- redis/install.sls
+- redis/start.sls
+- redis/stop.sls
+- redis/uninstall.sls
+- redis/upgrade.sls
+- root_node_yarn_pnpm/install.sls
+- root_node_yarn_pnpm/upgrade.sls
+- setup_user.sls
+- supabase/install.sls
+- supabase/start.sls
+- supabase/stop.sls
+- supabase/uninstall.sls
+- supabase/upgrade.sls
+- test.sls
+- timezone.sls
+- top.sls
+- webserver/apache2/install.sls
+- webserver/apache2/uninstall.sls
+- webserver/apache2/upgrade.sls
+- webserver/nginx/install.sls
+- webserver/nginx/uninstall.sls
+- webserver/nginx/upgrade.sls
