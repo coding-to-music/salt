@@ -299,34 +299,24 @@ sudo salt '*' state.apply redis.start saltenv=dev
 sudo salt '*' state.apply redis.stop saltenv=dev
 ```
 
-## Node.js
+## non-root-user - Node Yarn pmpm 
 
-Manual Install
+Salt commands for non-root-user for Node Yarn pnpm
 
 ```java
-# Download and install nvm:
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+sudo salt '*' state.apply non_root_node_yarn_pnpm.install saltenv=dev
 
-# in lieu of restarting the shell
-\. "$HOME/.nvm/nvm.sh"
-
-# Download and install Node.js:
-nvm install 23
-
-# Verify the Node.js version:
-node -v # Should print "v23.9.0".
-nvm current # Should print "v23.9.0".
-
-# Verify npm version:
-npm -v # Should print "10.9.2".
+sudo salt '*' state.apply non_root_node_yarn_pnpm.upgrade saltenv=dev
 ```
 
-Salt commands for Node
+## root-user - Node Yarn pmpm 
+
+Salt commands for non-root-user for Node Yarn pnpm
 
 ```java
-sudo nano /srv/salt/dev/node_yarn_pnpm/install.sls
+sudo salt '*' state.apply root_node_yarn_pnpm.install saltenv=dev
 
-sudo nano /srv/salt/dev/node_yarn_pnpm/upgrade.sls
+sudo salt '*' state.apply root_node_yarn_pnpm.upgrade saltenv=dev
 ```
 
 ## Supabase
