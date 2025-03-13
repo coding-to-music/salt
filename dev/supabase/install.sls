@@ -1,0 +1,32 @@
+supabase_repo:
+  cmd.run:
+    - name: |
+        wget -qO- https://deb.nodesource.com/setup_14.x | sudo -E bash -
+        wget -qO- https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
+        echo "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+        sudo apt-get update
+    - unless: test -f /etc/apt/sources.list.d/pgdg.list
+
+supabase_install:
+  pkg.installed:
+    - pkgs:
+      - nodejs
+      - postgresql-13
+      - postgresql-client-13
+      - postgresql-contrib
+      - postgresql-server-dev-13
+      - build-essential
+      - libssl-dev
+
+supabase_cli_install:
+  cmd.run:
+    - name: |
+        npm install -g supabase
+    - unless: test -f /usr/local/bin/supabase
+
+supabase_service:
+  service.running:
+    - name: postgresql
+    - enable: True
+    - watch:
+      - pkg: supabase_install

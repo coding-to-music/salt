@@ -314,6 +314,20 @@ Manual Install
 ```java
 ```
 
+Salt commands for Supabase
+
+```java
+sudo salt '*' state.apply supabase.install saltenv=dev
+
+sudo salt '*' state.apply supabase.uninstall saltenv=dev
+
+sudo salt '*' state.apply supabase.upgrade saltenv=dev
+
+sudo salt '*' state.apply supabase.start saltenv=dev
+
+sudo salt '*' state.apply supabase.stop saltenv=dev
+```
+
 ## MongoDB
 
 https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
