@@ -227,6 +227,19 @@ Manual Install
 ```java
 ```
 
+Salt commands for k3s
+
+```java
+sudo salt '*' state.apply k3s.install saltenv=dev
+
+sudo salt '*' state.apply k3s.uninstall saltenv=dev
+
+sudo salt '*' state.apply k3s.upgrade saltenv=dev
+
+sudo salt '*' state.apply k3s.start saltenv=dev
+
+sudo salt '*' state.apply k3s.stop saltenv=dev
+```
 
 
 ## Hashicorp Vault
@@ -311,7 +324,7 @@ sudo salt '*' state.apply non_root_node_yarn_pnpm.upgrade saltenv=dev
 
 ## root-user - Node Yarn pmpm 
 
-Salt commands for non-root-user for Node Yarn pnpm
+Salt commands for root-user for Node Yarn pnpm
 
 ```java
 sudo salt '*' state.apply root_node_yarn_pnpm.install saltenv=dev
