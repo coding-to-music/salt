@@ -11,6 +11,7 @@ supabase_install:
   pkg.installed:
     - pkgs:
       - nodejs
+      - npm
       - postgresql-13
       - postgresql-client-13
       - postgresql-contrib
