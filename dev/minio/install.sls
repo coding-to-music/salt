@@ -13,8 +13,17 @@ minio_install:
     - name: |
         wget https://dl.min.io/server/minio/release/linux-amd64/minio -O /usr/local/bin/minio
         chmod +x /usr/local/bin/minio
-        wget https://dl.min.io/server/minio/release/linux-amd64/minio.service -O /etc/systemd/system/minio.service
     - unless: test -f /usr/local/bin/minio
+
+minio_service_file:
+  file.managed:
+    - name: /etc/systemd/system/minio.service
+    - source: salt://minio/minio.service
+    - user: root
+    - group: root
+    - mode: 644
+    - require:
+      - cmd: minio_install
 
 minio_data_dir:
   file.directory:
@@ -31,5 +40,5 @@ minio_service:
     - name: minio
     - enable: True
     - watch:
-      - cmd: minio_install
+      - file: minio_service_file
       - file: minio_data_dir
