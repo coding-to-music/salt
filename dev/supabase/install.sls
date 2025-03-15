@@ -2,8 +2,8 @@ supabase_repo:
   cmd.run:
     - name: |
         wget -qO- https://deb.nodesource.com/setup_14.x | sudo -E bash -
-        wget -qO- https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
-        echo "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+        wget -qO- https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo tee /usr/share/keyrings/postgresql-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
         sudo apt-get update
     - unless: test -f /etc/apt/sources.list.d/pgdg.list
 
