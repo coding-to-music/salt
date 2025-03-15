@@ -272,6 +272,7 @@ Salt commands for Vault
 
 ```java
 sudo salt '*' state.apply hashicorp_vault.install saltenv=dev
+sudo salt '*' state.apply hashicorp_vault.vault_count_secrets saltenv=dev
 ```
 
 
@@ -376,6 +377,7 @@ Salt commands for Supabase
 sudo salt '*' state.apply supabase.create_user saltenv=dev
 sudo salt '*' state.apply supabase.ownership saltenv=dev
 sudo salt '*' state.apply supabase.docker_install saltenv=dev
+
 sudo salt '*' state.apply supabase.supabase_docker_setup saltenv=dev
 ```
 
