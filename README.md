@@ -268,6 +268,64 @@ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/s
 sudo apt update && sudo apt install hcp -y
 ```
 
+Setup
+
+a. Login to the HashiCorp Cloud Platform to access HVS.
+
+```java
+hcp auth login
+```
+
+b. Once successfully logged in run:
+
+```java
+hcp profile init --vault-secrets
+```
+
+c. Now set your default config by selecting Organization, Project, and App.
+
+Read your secret
+
+```java
+hcp vault-secrets secrets open {desired secret}
+```
+
+You may also inject secrets into your app as environment variables by passing a command as string, as shown below for an app using python.
+
+```java
+hcp vault-secrets run -- python3 my_app.py
+```
+
+Once the Vault CLI is installed, try the following command to create a token:
+
+```java
+hcp vault token create
+```
+
+Check Vault Status
+
+To confirm that Vault is running and accessible:
+
+```java
+vault status
+```
+
+You can also list secrets using:
+
+```java
+vault kv list secret/
+```
+
+4. Update Your .env File
+
+Once you've generated the token, add it to your .env file:
+
+```java
+VAULT_ADDR=http://127.0.0.1:8200
+VAULT_TOKEN=<your-new-token>
+```
+
+
 Salt commands for Vault
 
 ```java

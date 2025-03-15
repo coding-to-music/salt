@@ -42,6 +42,12 @@ install_hashicorp_vault:
     - require:
       - cmd: update_apt_after_repo
 
+install_hashicorp_vault_cli:
+  pkg.installed:
+    - name: vault
+    - require:
+      - cmd: update_apt_after_repo
+
 # Fetch and Display the Number of Secrets in Vault
 count_vault_secrets:
   cmd.run:
