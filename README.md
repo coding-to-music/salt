@@ -254,8 +254,26 @@ Manual Install
 
 https://developer.hashicorp.com/hcp/tutorials/get-started-hcp-vault-secrets/hcp-vault-secrets-install-cli
 
+Install HCP CLI
+
 ```java
+# Update the apt repository
+sudo apt-get update && \
+  sudo apt-get install gpg coreutils
+
+# Download the HashiCorp GPG key
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+# Add the HashiCorp repo
+sudo apt update && sudo apt install hcp -y
 ```
+
+Salt commands for Vault
+
+```java
+sudo salt '*' state.apply hashicorp_vault.install saltenv=dev
+```
+
 
 ## Create User
 
