@@ -261,8 +261,9 @@ https://developer.hashicorp.com/hcp/tutorials/get-started-hcp-vault-secrets/hcp-
 
 ```java
 sudo salt '*' state.apply user_setup.create_user saltenv=dev
-sudo salt '*' state.apply user_setup.setup_github saltenv=dev
 sudo salt '*' state.apply user_setup.get_bash_files saltenv=dev
+sudo salt '*' state.apply user_setup.setup_ssh_keys saltenv=dev
+sudo salt '*' state.apply user_setup.setup_github saltenv=dev
 ```
 
 ## Redis
