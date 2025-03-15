@@ -369,14 +369,12 @@ https://supabase.com/docs/guides/local-development/cli/getting-started?queryGrou
 
 https://supabase.com/docs/guides/local-development?queryGroups=package-manager&package-manager=yarn
 
-Manual Install
-
-```java
-```
 
 Salt commands for Supabase
 
 ```java
+sudo salt '*' state.apply supabase.create_user saltenv=dev
+sudo salt '*' state.apply supabase.ownership saltenv=dev
 sudo salt '*' state.apply supabase.docker_install saltenv=dev
 sudo salt '*' state.apply supabase.supabase_docker_setup saltenv=dev
 ```
