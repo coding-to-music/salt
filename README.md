@@ -296,6 +296,22 @@ You may also inject secrets into your app as environment variables by passing a 
 hcp vault-secrets run -- python3 my_app.py
 ```
 
+Check that vault is enabled and running
+
+```java
+sudo systemctl status vault
+
+# if needed get the vault service enabled and running
+sudo systemctl enable vault
+sudo systemctl restart vault
+sudo systemctl status vault
+```
+
+```java
+export VAULT_SKIP_VERIFY=true
+vault operator init
+```
+
 Once the Vault CLI is installed, try the following command to create a token:
 
 ```java
@@ -309,6 +325,31 @@ To confirm that Vault is running and accessible:
 ```java
 vault status
 ```
+
+1. Unseal the Vault
+
+Since Vault is using the Shamir Seal mechanism, you need to provide at least Threshold (e.g., 3) unseal keys to unseal it. Follow these steps:
+
+Use one of the unseal keys that was generated during vault operator init:
+
+```java
+vault operator unseal
+```
+
+When prompted, paste one of the unseal keys.
+
+Repeat this process with different unseal keys until the Unseal Progress reaches 3/3.
+
+Verify the Vault is unsealed:
+
+```java
+vault status
+```
+
+The Sealed value should now read false.
+
+2. Add the Initial Root Token to .env
+
 
 You can also list secrets using:
 
