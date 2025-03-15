@@ -377,15 +377,30 @@ Manual Install
 Salt commands for Supabase
 
 ```java
-sudo salt '*' state.apply supabase.install saltenv=dev
+sudo salt '*' state.apply supabase.docker_install
+sudo salt '*' state.apply supabase.supabase_docker_setup
+```
 
-sudo salt '*' state.apply supabase.uninstall saltenv=dev
+Automated Updates: Use the update state to refresh Docker images and restart Supabase monthly:
 
-sudo salt '*' state.apply supabase.upgrade saltenv=dev
+```java
+sudo salt '*' state.apply supabase.supabase_update
+```
 
-sudo salt '*' state.apply supabase.start saltenv=dev
+Optional: Schedule Updates
 
-sudo salt '*' state.apply supabase.stop saltenv=dev
+To automate monthly updates, you can add a Salt schedule or a cron job:
+
+Add a Cron Job for Updates:
+
+```java
+sudo crontab -e
+```
+
+Add this line to execute the update state monthly:
+
+```java
+0 2 1 * * salt '*' state.apply supabase.supabase_update
 ```
 
 ## MongoDB

@@ -1,4 +1,4 @@
-{% set user = "your_non_root_username" %}
+{% set user = "tmc" %}
 
 nvm_install:
   cmd.run:
