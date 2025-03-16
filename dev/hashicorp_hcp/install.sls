@@ -8,6 +8,8 @@ install_dependencies:
   pkg.installed:
     - pkgs:
       - gpg
+      - curl
+      - jq
       - coreutils
     - require:
       - cmd: update_apt
@@ -41,23 +43,3 @@ install_hashicorp_vault:
     - name: hcp
     - require:
       - cmd: update_apt_after_repo
-
-# Ensure required packages are installed
-install_dependencies2:
-  pkg.installed:
-    - pkgs:
-      - curl  # For API calls
-      - jq    # For processing JSON (optional, but useful)
-
-# Optionally: Clean up previous Vault installations (if needed)
-remove_old_vault:
-  pkg.purged:
-    - name: vault
-    - require:
-      - pkg: install_dependencies
-
-remove_old_vault_config:
-  file.absent:
-    - name: /etc/vault.d
-    - require:
-      - pkg: remove_old_vault
