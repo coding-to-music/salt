@@ -359,12 +359,11 @@ Contents of .env
 HCP_SECRETS_URL=https://your-vault-cluster-url
 HCP_CLIENT_ID=your-client-id
 HCP_CLIENT_SECRET=your-client-secret
-HCP_API_TOKEN=<dynamically-fetched-token-will-get-updated-by-salt-install.sls>
 ```
 
 ```java
-sudo salt '*' state.apply hashicorp_hcp.install
-sudo salt '*' state.apply hashicorp_hcp.count_secrets
+sudo salt '*' state.apply hashicorp_hcp.install saltenv=dev
+sudo salt '*' state.apply hashicorp_hcp.count_secrets saltenv=dev
 ```
 
 
