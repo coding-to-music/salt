@@ -242,7 +242,7 @@ sudo salt '*' state.apply k3s.stop saltenv=dev
 ```
 
 
-## Hashicorp Vault
+## Hashicorp HCP Vault
 
 https://portal.cloud.hashicorp.com/sign-in
 
@@ -254,7 +254,7 @@ Manual Install
 
 https://developer.hashicorp.com/hcp/tutorials/get-started-hcp-vault-secrets/hcp-vault-secrets-install-cli
 
-Install HCP CLI
+### Manual Install HCP CLI
 
 ```java
 # Update the apt repository
@@ -268,12 +268,14 @@ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/s
 sudo apt update && sudo apt install hcp -y
 ```
 
-Setup
+### Setup HCP CLI
 
 a. Login to the HashiCorp Cloud Platform to access HVS.
 
 ```java
 hcp auth login
+
+# click on the link to open a browser to authenticate
 ```
 
 b. Once successfully logged in run:
@@ -287,7 +289,17 @@ c. Now set your default config by selecting Organization, Project, and App.
 Read your secret
 
 ```java
-hcp vault-secrets secrets open {desired secret}
+hcp vault-secrets secrets open YOUR_SECRET_NAME
+```
+
+Output
+
+```java
+Secret Name:    YOUR_SECRET_NAME
+Type:           kv
+Created At:     2025-03-16T02:48:24.437Z
+Latest Version: 1
+Value:          YOUR_SECRET_VALUE
 ```
 
 You may also inject secrets into your app as environment variables by passing a command as string, as shown below for an app using python.
@@ -296,76 +308,48 @@ You may also inject secrets into your app as environment variables by passing a 
 hcp vault-secrets run -- python3 my_app.py
 ```
 
-Check that vault is enabled and running
+### Setup / Use HCP API
+
+Generate Service Principal key
+
+An HCP Service Principal and the associated Client_ID and Client_Secret are used for non-human access of HCP APIs from machines, apps, or system services.
+
+Generate credentials <<-- press this button
 
 ```java
-sudo systemctl status vault
-
-# if needed get the vault service enabled and running
-sudo systemctl enable vault
-sudo systemctl restart vault
-sudo systemctl status vault
+export HCP_CLIENT_ID=
+export HCP_CLIENT_SECRET=
 ```
+
+View available service principals for your project here. You can learn more about Service Principals and how to use them here.
+
+Generate the API Token
+
+The HCP API requires a valid Access Token. By authenticating to HCP with a user or Service Principal, you can retrieve a short-lived Access Token to call the HCP API.
 
 ```java
-export VAULT_SKIP_VERIFY=true
-vault operator init
+HCP_API_TOKEN=$(curl --location "https://auth.idp.hashicorp.com/oauth2/token" \
+--header "Content-Type: application/x-www-form-urlencoded" \
+--data-urlencode "client_id=$HCP_CLIENT_ID" \
+--data-urlencode "client_secret=$HCP_CLIENT_SECRET" \
+--data-urlencode "grant_type=client_credentials" \
+--data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
 ```
 
-Once the Vault CLI is installed, try the following command to create a token:
+Read your secrets
 
 ```java
-hcp vault token create
+curl \
+--location "https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/your-org-ID/projects/your-project-ID/apps/your-app-name/secrets:open" \
+--request GET \
+--header "Authorization: Bearer $HCP_API_TOKEN" | jq
 ```
 
-Check Vault Status
-
-To confirm that Vault is running and accessible:
+Output
 
 ```java
-vault status
+JSON list of all your secrets
 ```
-
-1. Unseal the Vault
-
-Since Vault is using the Shamir Seal mechanism, you need to provide at least Threshold (e.g., 3) unseal keys to unseal it. Follow these steps:
-
-Use one of the unseal keys that was generated during vault operator init:
-
-```java
-vault operator unseal
-```
-
-When prompted, paste one of the unseal keys.
-
-Repeat this process with different unseal keys until the Unseal Progress reaches 3/3.
-
-Verify the Vault is unsealed:
-
-```java
-vault status
-```
-
-The Sealed value should now read false.
-
-2. Add the Initial Root Token to .env
-
-
-You can also list secrets using:
-
-```java
-vault kv list secret/
-```
-
-4. Update Your .env File
-
-Once you've generated the token, add it to your .env file:
-
-```java
-VAULT_ADDR=http://127.0.0.1:8200
-VAULT_TOKEN=<your-new-token>
-```
-
 
 Salt commands for Vault
 
