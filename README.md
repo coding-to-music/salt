@@ -474,14 +474,53 @@ https://supabase.com/docs/guides/local-development/cli/getting-started?queryGrou
 https://supabase.com/docs/guides/local-development?queryGroups=package-manager&package-manager=yarn
 
 
+Environment Variables in .env:
+
+Secrets like POSTGRES_PASSWORD and GOTRUE_JWT_SECRET are extracted from the API response and written to `/opt/supabase/.env`
+
+Define these secrets in https://portal.cloud.hashicorp.com/
+
+```java
+POSTGRES_PASSWORD 
+GOTRUE_JWT_SECRET
+```
+
+### .env Configuration: Make sure `/srv/salt/.env` includes the following variables:
+
+```java
+HCP_SECRETS_URL=https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/your-org-ID/projects/your-project-ID/apps/your-app-name/secrets:open
+HCP_CLIENT_ID=your-client-id
+HCP_CLIENT_SECRET=your-client-secret
+```
+
 Salt commands for Supabase
 
 ```java
+# do these first once just to setup supabase_user in linux and install docker and docker-compose
 sudo salt '*' state.apply supabase.create_user saltenv=dev
 sudo salt '*' state.apply supabase.ownership saltenv=dev
 sudo salt '*' state.apply supabase.docker_install saltenv=dev
 
+# then this gets called as often as needed
 sudo salt '*' state.apply supabase.supabase_docker_setup saltenv=dev
+```
+
+Apply the State: Apply the updated state using:
+
+```java
+sudo salt '*' state.apply supabase.docker_setup saltenv=dev
+```
+
+Verify Secrets: Ensure /opt/supabase/.env contains the fetched secrets:
+
+```java
+cat /opt/supabase/.env
+```
+
+Check Services: Verify that the Supabase services are running:
+
+```java
+docker ps
 ```
 
 Automated Updates: Use the update state to refresh Docker images and restart Supabase monthly:
