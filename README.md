@@ -308,7 +308,7 @@ You may also inject secrets into your app as environment variables by passing a 
 hcp vault-secrets run -- python3 my_app.py
 ```
 
-### Setup / Use HCP API
+### Setup / Use HCP API to retrieve your secrets
 
 Generate Service Principal key
 
@@ -351,7 +351,7 @@ Output
 JSON list of all your secrets
 ```
 
-Salt commands for Vault
+### Salt commands for HCP Vault
 
 ```java
 sudo salt '*' state.apply hashicorp_vault.install saltenv=dev

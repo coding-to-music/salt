@@ -42,17 +42,22 @@ install_hashicorp_vault:
     - require:
       - cmd: update_apt_after_repo
 
-install_hashicorp_vault_cli:
+# Ensure required packages are installed
+install_dependencies2:
   pkg.installed:
+    - pkgs:
+      - curl  # For API calls
+      - jq    # For processing JSON (optional, but useful)
+
+# Optionally: Clean up previous Vault installations (if needed)
+remove_old_vault:
+  pkg.purged:
     - name: vault
     - require:
-      - cmd: update_apt_after_repo
+      - pkg: install_dependencies
 
-# Fetch and Display the Number of Secrets in Vault
-count_vault_secrets:
-  cmd.run:
-    - name: |
-        set -a && . /srv/salt/.env && set +a && \
-        vault kv list secret/ | grep -v "Keys" | wc -l
+remove_old_vault_config:
+  file.absent:
+    - name: /etc/vault.d
     - require:
-      - pkg: hcp
+      - pkg: remove_old_vault
