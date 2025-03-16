@@ -351,6 +351,18 @@ Output
 JSON list of all your secrets
 ```
 
+Test manually
+
+```java
+curl -s --location "https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/your-org-ID/projects/your-project-ID/apps/your-app-name/secrets:open" \
+--header "Authorization: Bearer $(curl -s --location "https://auth.idp.hashicorp.com/oauth2/token" \
+--header "Content-Type: application/x-www-form-urlencoded" \
+--data-urlencode "client_id=your-client-id" \
+--data-urlencode "client_secret=your-client-secret" \
+--data-urlencode "grant_type=client_credentials" \
+--data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)" | jq
+```
+
 ### Salt commands for HCP Vault
 
 Contents of .env
