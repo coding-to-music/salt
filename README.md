@@ -353,9 +353,19 @@ JSON list of all your secrets
 
 ### Salt commands for HCP Vault
 
+Contents of .env
+
 ```java
-sudo salt '*' state.apply hashicorp_vault.install saltenv=dev
-sudo salt '*' state.apply hashicorp_vault.vault_count_secrets saltenv=dev
+VAULT_ADDR=https://your-vault-cluster-url
+HCP_CLIENT_ID=your-client-id
+HCP_CLIENT_SECRET=your-client-secret
+HCP_API_TOKEN=<dynamically-fetched-token-will-get-updated-by-salt-install.sls>
+```
+
+```java
+sudo salt '*' state.apply hashicorp_hcp.install
+sudo salt '*' state.apply hashicorp_hcp.fetch_hcp_token
+sudo salt '*' state.apply hashicorp_hcp.count_secrets
 ```
 
 
