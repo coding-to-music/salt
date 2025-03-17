@@ -778,13 +778,26 @@ Once you've updated the grains file, instruct Salt to refresh grains:
 
 ```java
 sudo salt '*' saltutil.sync_grains
+
+# or
+
+sudo salt '*' saltutil.refresh_grains
 ```
 
 Step 3: Verify the Hostname Grain
+
 Ensure that the custom grain is set correctly by running:
 
 ```java
 sudo salt '*' grains.items
+
+# or
+
+sudo salt '*' grains.item hostname | grep -A 1 hostname
+
+# or
+
+sudo salt '*' grains.item hostname
 ```
 
 Look for the hostname entry in the output to confirm it's set to your custom value.
