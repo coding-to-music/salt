@@ -545,6 +545,32 @@ Add this line to execute the update state monthly:
 0 2 1 * * salt '*' state.apply supabase.supabase_update saltenv=dev
 ```
 
+## Grafana integration for self-hosted Supabase
+
+- 1. Project Reference ID
+
+Since you're self-hosting, you won't have a Supabase-hosted project URL like https://<project-reference-id>.supabase.co. Instead:
+
+The Project Reference ID is typically a unique identifier for your Supabase project. If you're using the Supabase CLI or have configured your project locally, you can find it in the supabase/config.toml file. Look for a field like project_id or project_ref.
+
+If you don't see it there, you might need to define a custom identifier for your self-hosted setup to integrate with Grafana.
+
+- 2. Service Role API Key
+
+For self-hosted Supabase, the Service Role API Key is generated during the setup process. Here's how you can retrieve or generate it:
+
+Check your `.env` file or the environment variables used in your Docker Compose setup. Look for a variable like `SUPABASE_SERVICE_ROLE_KEY`
+
+If it's not present, you may need to generate a new key manually. This key is typically tied to your Postgres database and should have elevated privileges to bypass Row Level Security (RLS).
+
+- 3. Integration with Grafana
+
+Once you have both the Project Reference ID and the Service Role API Key, you can configure Grafana to scrape metrics from your self-hosted Supabase instance. Ensure that:
+
+Your Supabase instance exposes the necessary metrics endpoint.
+
+Grafana is configured with the correct credentials and endpoint URL.
+
 ## MongoDB
 
 https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
