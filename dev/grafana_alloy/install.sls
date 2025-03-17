@@ -52,6 +52,8 @@ alloy_service:
     - watch:
       - cmd: fetch_hcp_secrets_and_configure_alloy
       - file: /etc/alloy/config.alloy
+    - require:
+      - cmd: fetch_hcp_secrets_and_configure_alloy
 
 # Download and install Node Exporter
 install_node_exporter:
