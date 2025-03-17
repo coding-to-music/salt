@@ -12,7 +12,8 @@ alloy_install:
   pkg.installed:
     - name: alloy
 
-fetch_hcp_secrets_and_configure_alloy:
+# Fetch secrets and write to /etc/default/alloy
+fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
         # Fetch HCP API Token
@@ -27,19 +28,23 @@ fetch_hcp_secrets_and_configure_alloy:
         curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
           --header "Authorization: Bearer $HCP_API_TOKEN" > /tmp/hcp_secrets.json
 
-        # Extract secrets from the JSON structure
-        HOSTNAME="{{ grains['hostname'] }}" # Dynamically include the hostname
-        jq -n \
-        --arg loki_url "$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_URL") | .static_version.value' /tmp/hcp_secrets.json)" \
-        --arg loki_user "$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_USERNAME") | .static_version.value' /tmp/hcp_secrets.json)" \
-        --arg loki_pass "$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .static_version.value' /tmp/hcp_secrets.json)" \
-        --arg prom_url "$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_URL") | .static_version.value' /tmp/hcp_secrets.json)" \
-        --arg prom_user "$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_USERNAME") | .static_version.value' /tmp/hcp_secrets.json)" \
-        --arg prom_pass "$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_PASSWORD") | .static_version.value' /tmp/hcp_secrets.json)" \
-        --arg hostname "$HOSTNAME" \
-        '{loki_url: $loki_url, loki_user: $loki_user, loki_pass: $loki_pass, prom_url: $prom_url, prom_user: $prom_user, prom_pass: $prom_pass, hostname: $hostname}' > /etc/alloy/config.alloy
+        # Generate /etc/default/alloy from HCP secrets
+        HOSTNAME="{{ grains['hostname'] }}" # Include the hostname dynamically
+        cat <<EOF > /etc/default/alloy
+        HOSTNAME=${HOSTNAME}
+        GRAFANA_LOKI_URL=$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_URL") | .static_version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_LOKI_USERNAME=$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_USERNAME") | .static_version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_LOKI_PASSWORD=$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .static_version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_PROM_URL=$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_URL") | .static_version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_PROM_USERNAME=$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_USERNAME") | .static_version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_PROM_PASSWORD=$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_PASSWORD") | .static_version.value // "missing"' /tmp/hcp_secrets.json)
+        EOF
 
-        # Securely delete the temporary secrets file
+        # Secure /etc/default/alloy
+        chmod 600 /etc/default/alloy
+        chown alloy:alloy /etc/default/alloy
+
+        # Remove temporary HCP secrets file
         rm -f /tmp/hcp_secrets.json
     - require:
       - pkg: alloy_install
