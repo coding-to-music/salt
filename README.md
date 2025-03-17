@@ -200,6 +200,100 @@ sudo salt '*' state.apply webserver.apache2.install saltenv=dev
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 
+## Salt Terminology - Grains vs Pillars
+
+### Grains
+
+What Are Grains?
+
+- Grains provide static, system-specific information about a Salt minion.
+- Examples include OS version, architecture, hostname, IP address, and custom-defined variables (like the hostname you set earlier).
+
+Purpose:
+
+- Grains are useful for categorizing and targeting minions during state execution.
+- You can define custom grains to store additional, fixed metadata (e.g., server roles, locations).
+
+How Grains Work:
+
+- They are collected directly from the minion, usually at startup.
+- Stored locally on the minion.
+- Grains data is accessible throughout a Salt run and doesn't require querying the Salt master.
+
+Examples:
+
+- Default grains: OS, kernel, hostname.
+- Custom grains: hostname: server1.
+
+Use Case:
+
+- Target minions based on specific characteristics, e.g., applying states only to Ubuntu servers:
+
+```java
+sudo salt -G 'os:Ubuntu' state.apply
+```
+
+Key Properties:
+
+- Static or rarely changing.
+- Stored on minions (/etc/salt/grains).
+
+### Pillars
+
+What Are Pillars?
+
+- Pillars provide secure, hierarchical data that is assigned from the Salt master to minions.
+- Designed for sensitive information, like API keys, passwords, and configurations that shouldn't be hardcoded into states.
+
+Purpose:
+
+- Pillars enable dynamic, customizable data for minions.
+- This data is defined and managed centrally on the Salt master.
+
+How Pillars Work:
+
+- Pillars are configured in pillar files on the master (/srv/pillar).
+- You can assign data to specific minions or groups of minions via the pillar top file (/srv/pillar/top.sls).
+- The master sends pillar data securely to minions during execution.
+
+Examples:
+
+- Storing a database password in a pillar:
+
+```java
+db_password: "securepassword123"
+```
+
+- Accessing the pillar in a state:
+
+```java
+{% set db_pass = salt['pillar.get']('db_password') %}
+```
+
+Use Case:
+
+- Distribute secrets or configurations securely, e.g., providing an API key to a specific server.
+
+Key Properties:
+
+- Dynamic and assigned per minion.
+- Stored securely on the master.
+
+Comparison
+| Feature          | Grains                         | Pillars                              |
+|------------------|--------------------------------|--------------------------------------|
+| **Purpose**      | Static, system metadata       | Dynamic, secure configuration data   |
+| **Location**     | Stored on the minion          | Stored on the master                 |
+| **Use**          | Targeting minions and metadata | Distributing secrets/configurations  |
+| **Example**      | OS, hostname, IP address      | API keys, passwords, custom configs  |
+| **Accessibility**| Automatically available to minion | Assigned securely from the master   |
+
+When to Use Each
+
+- Grains: Use grains for static data that describes the minion itself, such as its location, role, or operating system.  
+- Pillars: Use pillars for dynamic, sensitive, or application-specific data that you want to securely distribute from the master.
+
+
 ## Backup hard drive
 
 - [ ] rsync
@@ -549,7 +643,9 @@ Add this line to execute the update state monthly:
 
 - 1. Project Reference ID
 
-Since you're self-hosting, you won't have a Supabase-hosted project URL like https://<project-reference-id>.supabase.co. Instead:
+Since you're self-hosting, you won't have a Supabase-hosted project URL like `https://<project-reference-id>.supabase.co` 
+
+Instead:
 
 The Project Reference ID is typically a unique identifier for your Supabase project. If you're using the Supabase CLI or have configured your project locally, you can find it in the supabase/config.toml file. Look for a field like project_id or project_ref.
 
@@ -658,7 +754,48 @@ sudo salt '*' state.apply grafana.stop saltenv=dev
 
 ## Grafana Alloy
 
-Manual Alloy Install
+Step 1: Create or Edit the Grains File
+
+Salt grains can be defined in `/etc/salt/grains`. If the file doesn't exist, you can create it.
+
+Open the grains file:
+
+```java
+sudo nano /etc/salt/grains
+```
+
+Add or edit the hostname grain. For example, for server1:
+
+```java
+hostname: server1
+```
+
+Save the file and exit.
+
+Step 2: Refresh Grains
+
+Once you've updated the grains file, instruct Salt to refresh grains:
+
+```java
+sudo salt '*' saltutil.sync_grains
+```
+
+Step 3: Verify the Hostname Grain
+Ensure that the custom grain is set correctly by running:
+
+```java
+sudo salt '*' grains.items
+```
+
+Look for the hostname entry in the output to confirm it's set to your custom value.
+
+Additional Notes
+
+- If you want to specify the hostname dynamically when applying the Salt state, you can also pass it as a pillar
+
+```java
+sudo salt '*' state.apply grafana_alloy.install pillar="{HOSTNAME: server1}"
+```
 
 
 Salt commands for Alloy
@@ -673,6 +810,16 @@ sudo salt '*' state.apply grafana_alloy.upgrade saltenv=dev
 sudo salt '*' state.apply grafana_alloy.start saltenv=dev
 
 sudo salt '*' state.apply grafana_alloy.stop saltenv=dev
+```
+
+Verify Services:
+
+Check Node Exporter metrics at `http://<hostname>:9100/metrics`
+
+Verify that Alloy is running:
+
+```java
+sudo systemctl status alloy-server
 ```
 
 ## Grafana K6
