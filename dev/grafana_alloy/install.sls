@@ -12,7 +12,21 @@ alloy_install:
   pkg.installed:
     - name: alloy
 
-# Fetch secrets and write to /etc/default/alloy
+# Backup existing config.alloy if it exists
+backup_config_alloy:
+  cmd.run:
+    - name: sudo cp -p /etc/alloy/config.alloy /etc/alloy/config.alloy.$(date +%Y-%m-%d_%H-%M-%S)
+    - unless: test -f /etc/alloy/config.alloy
+
+# Download and replace with new config.alloy
+replace_config_alloy:
+  cmd.run:
+    - name: |
+        wget -O /etc/alloy/config.alloy https://raw.githubusercontent.com/coding-to-music/grafana-alloy-otel-tutorial-loki-prometheus/refs/heads/main/my_config.alloy
+    - require:
+      - cmd: backup_config_alloy
+
+# Fetch secrets from HCP Vault and write them to /etc/default/alloy
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
@@ -48,6 +62,7 @@ fetch_hcp_secrets_and_set_env:
         rm -f /tmp/hcp_secrets.json
     - require:
       - pkg: alloy_install
+      - cmd: replace_config_alloy
 
 # Ensure Alloy is running
 alloy_service:
@@ -55,10 +70,10 @@ alloy_service:
     - name: alloy
     - enable: True
     - watch:
-      - cmd: fetch_hcp_secrets_and_configure_alloy
+      - cmd: fetch_hcp_secrets_and_set_env
       - file: /etc/alloy/config.alloy
     - require:
-      - cmd: fetch_hcp_secrets_and_configure_alloy
+      - cmd: fetch_hcp_secrets_and_set_env
 
 # Download and install Node Exporter
 install_node_exporter:
