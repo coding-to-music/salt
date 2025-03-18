@@ -814,7 +814,7 @@ sudo salt '*' state.apply grafana_alloy.install pillar="{HOSTNAME: server1}"
 Salt commands for Alloy
 
 ```java
-sudo salt '*' state.apply grafana_alloy.install saltenv=dev
+sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
 
 sudo salt '*' state.apply grafana_alloy.uninstall saltenv=dev
 
@@ -825,6 +825,19 @@ sudo salt '*' state.apply grafana_alloy.start saltenv=dev
 sudo salt '*' state.apply grafana_alloy.stop saltenv=dev
 ```
 
+If minion does not return
+
+```java
+cd /var/cache/salt/minion/proc
+ls -lat
+```
+
+Verify the secrets file is being created
+
+```java
+cat /etc/default/alloy
+```
+
 Verify Services:
 
 Check Node Exporter metrics at `http://<hostname>:9100/metrics`
@@ -832,7 +845,15 @@ Check Node Exporter metrics at `http://<hostname>:9100/metrics`
 Verify that Alloy is running:
 
 ```java
-sudo systemctl status alloy-server
+sudo systemctl status alloy
+cat /etc/alloy/config.alloy
+```
+
+Verify that node_exporter is running:
+
+```java
+sudo systemctl status node_exporter
+curl http://localhost:9100/metrics
 ```
 
 ## Grafana K6
