@@ -15,8 +15,9 @@ fetch_hcp_secrets_and_set_env:
         fetch_all_secrets() {
           local HCP_API_TOKEN
           local next_page_token=""
-          local previous_page_token=""
-          local secrets_count
+          local secrets_count=0
+          local combined_count=0
+          local last_combined_count=0
 
           # Initialize or empty the combined secrets file
           echo "[]" > $SECRETS_FILE
@@ -51,15 +52,9 @@ fetch_hcp_secrets_and_set_env:
             next_page_token=$(echo "$response" | jq -r '.pagination.next_page_token')
             secrets_count=$(echo "$secrets" | jq 'length')
 
-            # Check if there are no secrets in the response
+            # Check if no secrets returned
             if [ "$secrets_count" -eq 0 ]; then
               log_message "No secrets returned in this page. Breaking loop."
-              break
-            fi
-
-            # Check if the next_page_token is the same as the previous one
-            if [ "$next_page_token" == "$previous_page_token" ]; then
-              log_message "Detected repeated next_page_token. Breaking the loop to prevent infinite requests."
               break
             fi
 
@@ -67,20 +62,29 @@ fetch_hcp_secrets_and_set_env:
             jq -s '.[0] + .[1]' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
             mv /tmp/temp_secrets.json $SECRETS_FILE
 
+            # Count the current number of combined secrets
+            combined_count=$(jq '. | length' $SECRETS_FILE)
+
+            # Check if the number of secrets hasn't increased
+            if [ "$combined_count" -eq "$last_combined_count" ]; then
+              log_message "No new secrets added. Breaking loop to avoid duplication."
+              break
+            fi
+
+            # Update the last combined count
+            last_combined_count=$combined_count
+
             # Break the loop if no next page
             if [ "$next_page_token" == "null" ] || [ -z "$next_page_token" ]; then
               log_message "No more pages to fetch. All secrets retrieved."
               break
             fi
 
-            # Update the previous_page_token for the next iteration
-            previous_page_token=$next_page_token
-
             # Add a short delay to avoid hitting rate limits
             sleep 1
           done
 
-          log_message "All secrets fetched and combined into $SECRETS_FILE."
+          log_message "All secrets fetched. Total combined secrets: $combined_count."
         }
 
         # Retry function with exponential backoff
