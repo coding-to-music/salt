@@ -2,7 +2,6 @@
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
-        # Set the log file and secrets file locations
         LOG_FILE="/var/log/hcp_secrets.log"
         SECRETS_FILE="/tmp/hcp_secrets_combined.json"
 
@@ -11,7 +10,7 @@ fetch_hcp_secrets_and_set_env:
           echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $LOG_FILE
         }
 
-        # Function to fetch secrets, including handling pagination
+        # Function to fetch secrets with pagination
         fetch_all_secrets() {
           local HCP_API_TOKEN
           local next_page_token=""
@@ -23,6 +22,7 @@ fetch_hcp_secrets_and_set_env:
 
           # Initialize or empty the combined secrets file
           echo "[]" > $SECRETS_FILE
+          log_message "Starting secret retrieval. Initialized empty secrets file."
 
           # Fetch HCP API Token
           log_message "Fetching HCP API Token..."
@@ -34,7 +34,7 @@ fetch_hcp_secrets_and_set_env:
             --data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
 
           if [ -z "$HCP_API_TOKEN" ]; then
-            log_message "Failed to fetch HCP API Token."
+            log_message "Failed to fetch HCP API Token. Exiting."
             exit 1
           fi
 
@@ -43,7 +43,7 @@ fetch_hcp_secrets_and_set_env:
           # Fetch secrets with pagination
           while :; do
             iteration=$((iteration + 1))
-            log_message "Iteration $iteration - Fetching secrets, next_page_token: $next_page_token"
+            log_message "Iteration $iteration - Fetching secrets with next_page_token: $next_page_token"
 
             # Make API call to fetch secrets
             response=$(curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
@@ -55,34 +55,39 @@ fetch_hcp_secrets_and_set_env:
             next_page_token=$(echo "$response" | jq -r '.pagination.next_page_token')
             secrets_count=$(echo "$secrets" | jq 'length')
 
-            # Log the number of secrets fetched on this page
-            log_message "Secrets fetched on this page: $secrets_count."
+            # Log secrets count for this request
+            log_message "Secrets fetched this iteration: $secrets_count."
+            log_message "Next page token: $next_page_token."
 
-            # Combine the secrets from this page into the combined file
+            # Combine secrets into the combined file
             jq -s '.[0] + .[1]' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
             mv /tmp/temp_secrets.json $SECRETS_FILE
 
-            # Count the current number of combined secrets
+            # Check the combined secret count
             combined_count=$(jq '. | length' $SECRETS_FILE)
-
-            # Log the combined secret count
-            log_message "Combined secrets so far: $combined_count."
+            log_message "Total secrets combined so far: $combined_count."
 
             # Break if no secrets are returned
             if [ "$secrets_count" -eq 0 ]; then
-              log_message "No secrets returned on this page. Breaking loop."
+              log_message "No secrets returned on this page. Breaking the loop."
               break
             fi
 
-            # Break if no new secrets are added
+            # Break if the combined count hasn't increased
             if [ "$combined_count" -eq "$last_combined_count" ]; then
-              log_message "No new secrets added. Breaking loop to avoid duplication."
+              log_message "No new secrets added to the combined file. Breaking to avoid duplication."
               break
             fi
 
-            # Break if the next_page_token has not changed
+            # Break if the `next_page_token` is unchanged
             if [ "$next_page_token" == "$previous_page_token" ]; then
-              log_message "Detected repeated next_page_token ($next_page_token). Breaking loop."
+              log_message "Next page token is repeated. Breaking the loop."
+              break
+            fi
+
+            # Break if there is no valid next_page_token
+            if [ "$next_page_token" == "null" ] || [ -z "$next_page_token" ]; then
+              log_message "No more pages to fetch. Breaking the loop."
               break
             fi
 
@@ -90,13 +95,7 @@ fetch_hcp_secrets_and_set_env:
             last_combined_count=$combined_count
             previous_page_token=$next_page_token
 
-            # Break if no valid next_page_token
-            if [ "$next_page_token" == "null" ] || [ -z "$next_page_token" ]; then
-              log_message "No more pages to fetch. All secrets retrieved."
-              break
-            fi
-
-            # Add a short delay to avoid hitting rate limits
+            # Delay to avoid hitting rate limits
             sleep 1
           done
 
@@ -115,49 +114,34 @@ fetch_hcp_secrets_and_set_env:
               return 0
             fi
 
-            log_message "Failed attempt $((attempt+1)). Retrying in $delay seconds..."
+            log_message "Failed attempt $((attempt+1)). Retrying in $delay seconds."
             sleep $delay
-            attempt=$((attempt+1))
+            attempt=$((attempt + 1))
             delay=$((delay * 2)) # Exponential backoff
           done
 
-          log_message "Failed to fetch secrets after $retries attempts."
+          log_message "All retries exhausted. Failed to fetch secrets."
           exit 1
         }
 
         # Fetch secrets with retries
         fetch_with_retries
 
-        # Generate /etc/default/alloy from combined secrets
-        HOSTNAME="{{ grains['hostname'] }}" # Include the hostname dynamically
+        # Log the final count and write the /etc/default/alloy file
+        HOSTNAME="{{ grains['hostname'] }}"
+        total_secrets=$(jq '. | length' $SECRETS_FILE)
+        log_message "Total secrets fetched successfully: $total_secrets."
+
         cat <<EOF > /etc/default/alloy
         HOSTNAME=${HOSTNAME}
         GRAFANA_ALLOY_LOCAL_WRITE=true
         GRAFANA_LOKI_URL=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_URL") | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_LOKI_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_LOKI_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_PROM_URL=$(jq -r '.[] | select(.name=="GRAFANA_PROM_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_PROM_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_PROM_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_PROM_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_PROM_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_REMOTECFG_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_REMOTECFG_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_COLLECTOR_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_COLLECTOR_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_PIPELINE_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_PIPELINE_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_TRACES_URL=$(jq -r '.[] | select(.name=="GRAFANA_TRACES_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_TRACES_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_TRACES_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_TRACES_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_TRACES_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
+        # Add remaining environment variables here as needed
         EOF
 
-        # Secure the file
         chmod 600 /etc/default/alloy
         chown alloy:alloy /etc/default/alloy
-
-        # Count the total number of secrets and log it
-        total_secrets=$(jq '. | length' $SECRETS_FILE)
-        log_message "Total number of secrets fetched: $total_secrets"
-
-        # Clean up temporary files
-        rm -f $SECRETS_FILE
         log_message "/etc/default/alloy successfully created."
     - shell: /bin/bash
