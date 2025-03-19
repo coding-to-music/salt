@@ -2,6 +2,7 @@
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
+        # Set the log file and secrets file locations
         LOG_FILE="/var/log/hcp_secrets.log"
         SECRETS_FILE="/tmp/hcp_secrets_combined.json"
 
@@ -117,15 +118,4 @@ fetch_hcp_secrets_and_set_env:
         # Clean up temporary files
         rm -f $SECRETS_FILE
         log_message "/etc/default/alloy successfully created."
-    - require:
-        - file: /etc/default/alloy
-
-# Ensure `/etc/default/alloy` is properly secured
-secure_alloy_file:
-  file.managed:
-    - name: /etc/default/alloy
-    - user: alloy
-    - group: alloy
-    - mode: 600
-    - require:
-      - cmd: fetch_hcp_secrets_and_set_env
+    - shell: /bin/bash
