@@ -813,7 +813,13 @@ sudo salt '*' state.apply grafana_alloy.install pillar="{HOSTNAME: server1}"
 
 Salt commands for Alloy
 
+
+
 ```java
+cat /etc/default/alloy
+
+rm /etc/default/alloy
+
 sudo salt '*' state.apply hcp_secrets saltenv=dev
 
 sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
@@ -846,6 +852,8 @@ sudo salt-call state.apply hcp_secrets saltenv=dev
 Check the logs
 
 ```java
+cat /var/log/hcp_secrets.log
+
 sudo tail -f /var/log/salt/master
 
 sudo tail -f /var/log/salt/minion
