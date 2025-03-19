@@ -67,6 +67,10 @@ fetch_all_secrets() {
     sleep 1
   done
 
+  # Count the number of secrets
+  secret_count=$(jq '. | length' $SECRETS_FILE)
+  log_message "Total number of secrets fetched: $secret_count"
+
   log_message "All secrets fetched and combined into $SECRETS_FILE."
 }
 

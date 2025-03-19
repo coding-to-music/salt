@@ -816,6 +816,10 @@ Salt commands for Alloy
 
 
 ```java
+sudo systemctl restart salt-master
+
+sudo systemctl restart salt-minion
+
 cat /etc/default/alloy
 
 rm /etc/default/alloy
@@ -863,6 +867,10 @@ cat /etc/default/alloy
 cat /var/log/hcp_secrets.log
 
 cat /tmp/hcp_secrets_combined.json | jq
+
+cat /tmp/hcp_secrets_combined.json | jq '. | length'
+
+cat /tmp/hcp_secrets_combined.json | jq '.secrets | length'
 
 sudo tail -f /var/log/salt/master
 
