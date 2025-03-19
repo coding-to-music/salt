@@ -58,12 +58,6 @@ fetch_hcp_secrets_and_set_env:
             # Log the number of secrets fetched on this page
             log_message "Secrets fetched on this page: $secrets_count."
 
-            # Break if no secrets are returned
-            if [ "$secrets_count" -eq 0 ]; then
-              log_message "No secrets returned on this page. Breaking loop."
-              break
-            fi
-
             # Combine the secrets from this page into the combined file
             jq -s '.[0] + .[1]' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
             mv /tmp/temp_secrets.json $SECRETS_FILE
@@ -73,6 +67,12 @@ fetch_hcp_secrets_and_set_env:
 
             # Log the combined secret count
             log_message "Combined secrets so far: $combined_count."
+
+            # Break if no secrets are returned
+            if [ "$secrets_count" -eq 0 ]; then
+              log_message "No secrets returned on this page. Breaking loop."
+              break
+            fi
 
             # Break if no new secrets are added
             if [ "$combined_count" -eq "$last_combined_count" ]; then

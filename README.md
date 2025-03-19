@@ -864,7 +864,7 @@ Check the logs
 
 cat /etc/default/alloy
 
-cat /var/log/hcp_secrets.log
+tail /var/log/hcp_secrets.log
 
 cat /tmp/hcp_secrets_combined.json | jq
 
