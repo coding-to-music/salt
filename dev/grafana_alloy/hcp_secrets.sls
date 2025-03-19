@@ -53,7 +53,10 @@ fetch_hcp_secrets_and_set_env:
             next_page_token=$(echo "$response" | jq -r '.pagination.next_page_token')
             secrets_count=$(echo "$secrets" | jq 'length')
 
-            # Check if no secrets returned
+            # Log the number of secrets fetched on this page
+            log_message "Secrets fetched on this page: $secrets_count."
+
+            # Break if no secrets are returned
             if [ "$secrets_count" -eq 0 ]; then
               log_message "No secrets returned in this page. Breaking loop."
               break
@@ -66,13 +69,13 @@ fetch_hcp_secrets_and_set_env:
             # Count the current number of combined secrets
             combined_count=$(jq '. | length' $SECRETS_FILE)
 
-            # Check if the number of secrets hasn't increased
+            # Break if no new secrets are added
             if [ "$combined_count" -eq "$last_combined_count" ]; then
               log_message "No new secrets added. Breaking loop to avoid duplication."
               break
             fi
 
-            # Check if the next_page_token is the same as the previous one
+            # Break if the next_page_token has not changed
             if [ "$next_page_token" == "$previous_page_token" ]; then
               log_message "Detected repeated next_page_token. Breaking the loop to prevent infinite requests."
               break
@@ -82,7 +85,7 @@ fetch_hcp_secrets_and_set_env:
             last_combined_count=$combined_count
             previous_page_token=$next_page_token
 
-            # Break the loop if no next page
+            # Break if no valid next_page_token
             if [ "$next_page_token" == "null" ] || [ -z "$next_page_token" ]; then
               log_message "No more pages to fetch. All secrets retrieved."
               break
