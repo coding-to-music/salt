@@ -892,6 +892,23 @@ EOF
 chmod 600 /etc/default/alloy
 ```
 
+Check for Throttling or API Limits
+
+HashiCorp APIs could enforce rate limits or quotas that throttle your requests. Here’s how to identify if this is happening:
+
+Inspect API Response: Review the response of the curl command in your script to see if it indicates throttling. Add a debug flag to curl:
+
+```java
+curl -v --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
+  --header "Authorization: Bearer $HCP_API_TOKEN" > /tmp/hcp_secrets.json
+```
+
+Look for HTTP status codes:
+
+`429` Too Many Requests: Indicates throttling.
+
+`500/503`: Suggests server-side issues or rate limits.
+
 ```java
 cd /var/cache/salt/minion/proc
 ls -lat

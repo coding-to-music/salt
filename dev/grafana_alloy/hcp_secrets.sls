@@ -1,21 +1,64 @@
-# Fetch secrets from HCP Vault and write them to /etc/default/alloy
+# Fetch secrets from HCP Vault and write them to /etc/default/alloy with retries, logging, and backoff
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
-        # Fetch HCP API Token
-        HCP_API_TOKEN=$(curl -s --location "https://auth.idp.hashicorp.com/oauth2/token" \
-          --header "Content-Type: application/x-www-form-urlencoded" \
-          --data-urlencode "client_id=$(grep HCP_CLIENT_ID /srv/salt/.env | cut -d '=' -f2)" \
-          --data-urlencode "client_secret=$(grep HCP_CLIENT_SECRET /srv/salt/.env | cut -d '=' -f2)" \
-          --data-urlencode "grant_type=client_credentials" \
-          --data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
+        LOG_FILE="/var/log/hcp_secrets.log"
+        
+        # Log function to record timestamped entries
+        log_message() {
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $LOG_FILE
+        }
 
-        # Fetch secrets from HCP Vault
-        curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
-          --header "Authorization: Bearer $HCP_API_TOKEN" > /tmp/hcp_secrets.json
+        # Retry function with exponential backoff
+        fetch_secrets_with_retries() {
+          local retries=5
+          local delay=1
+          local attempt=0
+          
+          while [ $attempt -lt $retries ]; do
+            log_message "Attempt $((attempt+1)) of $retries: Fetching HCP API Token and secrets..."
+            
+            # Fetch HCP API Token
+            HCP_API_TOKEN=$(curl -s --location "https://auth.idp.hashicorp.com/oauth2/token" \
+              --header "Content-Type: application/x-www-form-urlencoded" \
+              --data-urlencode "client_id=$(grep HCP_CLIENT_ID /srv/salt/.env | cut -d '=' -f2)" \
+              --data-urlencode "client_secret=$(grep HCP_CLIENT_SECRET /srv/salt/.env | cut -d '=' -f2)" \
+              --data-urlencode "grant_type=client_credentials" \
+              --data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
+            
+            if [ -z "$HCP_API_TOKEN" ]; then
+              log_message "Failed to fetch HCP API Token. Retrying in $delay seconds..."
+              sleep $delay
+              attempt=$((attempt+1))
+              delay=$((delay * 2)) # Exponential backoff
+              continue
+            fi
+            
+            # Fetch secrets from HCP
+            curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
+              --header "Authorization: Bearer $HCP_API_TOKEN" > /tmp/hcp_secrets.json
+            
+            # Validate the fetched secrets file
+            if [ -s /tmp/hcp_secrets.json ] && jq -e .secrets[] /tmp/hcp_secrets.json > /dev/null 2>&1; then
+              log_message "Successfully fetched secrets from HCP."
+              return 0
+            fi
+            
+            log_message "Failed to fetch secrets. Retrying in $delay seconds..."
+            sleep $delay
+            attempt=$((attempt+1))
+            delay=$((delay * 2)) # Exponential backoff
+          done
+          
+          log_message "Failed to fetch secrets after $retries attempts."
+          return 1
+        }
 
+        # Fetch secrets with retries
+        fetch_secrets_with_retries || exit 1
+        
         # Generate /etc/default/alloy from HCP secrets
-        HOSTNAME="{{ grains['hostname'] }}"
+        HOSTNAME="{{ grains['hostname'] }}" # Include the hostname dynamically
         cat <<EOF > /etc/default/alloy
         HOSTNAME=${HOSTNAME}
         GRAFANA_ALLOY_LOCAL_WRITE=true
@@ -41,6 +84,7 @@ fetch_hcp_secrets_and_set_env:
 
         # Clean up temporary file
         rm -f /tmp/hcp_secrets.json
+        log_message "/etc/default/alloy successfully created."
     - require_in:
         - cmd: secure_alloy_file
 
