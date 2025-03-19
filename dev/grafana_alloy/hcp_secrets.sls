@@ -117,8 +117,8 @@ fetch_hcp_secrets_and_set_env:
         # Clean up temporary files
         rm -f $SECRETS_FILE
         log_message "/etc/default/alloy successfully created."
-    - require_in:
-        - cmd: secure_alloy_file
+    - require:
+        - file: /etc/default/alloy
 
 # Ensure `/etc/default/alloy` is properly secured
 secure_alloy_file:

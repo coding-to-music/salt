@@ -824,7 +824,7 @@ rm /var/log/hcp_secrets.log
 
 rm /tmp/hcp_secrets_combined.json
 
-sudo salt '*' state.apply hcp_secrets saltenv=dev
+sudo salt '*' state.apply grafana_alloy.hcp_secrets saltenv=dev
 
 sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
 
