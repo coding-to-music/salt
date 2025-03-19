@@ -15,6 +15,7 @@ fetch_hcp_secrets_and_set_env:
         fetch_all_secrets() {
           local HCP_API_TOKEN
           local next_page_token=""
+          local previous_page_token=""
           local secrets_count=0
           local combined_count=0
           local last_combined_count=0
@@ -71,8 +72,15 @@ fetch_hcp_secrets_and_set_env:
               break
             fi
 
-            # Update the last combined count
+            # Check if the next_page_token is the same as the previous one
+            if [ "$next_page_token" == "$previous_page_token" ]; then
+              log_message "Detected repeated next_page_token. Breaking the loop to prevent infinite requests."
+              break
+            fi
+
+            # Update the last combined count and previous page token
             last_combined_count=$combined_count
+            previous_page_token=$next_page_token
 
             # Break the loop if no next page
             if [ "$next_page_token" == "null" ] || [ -z "$next_page_token" ]; then
