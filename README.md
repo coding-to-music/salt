@@ -814,6 +814,8 @@ sudo salt '*' state.apply grafana_alloy.install pillar="{HOSTNAME: server1}"
 Salt commands for Alloy
 
 ```java
+sudo salt '*' state.apply hcp_secrets saltenv=dev
+
 sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
 
 sudo salt '*' state.apply grafana_alloy.uninstall saltenv=dev
