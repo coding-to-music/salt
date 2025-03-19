@@ -19,6 +19,7 @@ fetch_hcp_secrets_and_set_env:
           local secrets_count=0
           local combined_count=0
           local last_combined_count=0
+          local iteration=0
 
           # Initialize or empty the combined secrets file
           echo "[]" > $SECRETS_FILE
@@ -41,7 +42,8 @@ fetch_hcp_secrets_and_set_env:
 
           # Fetch secrets with pagination
           while :; do
-            log_message "Fetching secrets, next_page_token: $next_page_token"
+            iteration=$((iteration + 1))
+            log_message "Iteration $iteration - Fetching secrets, next_page_token: $next_page_token"
 
             # Make API call to fetch secrets
             response=$(curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
@@ -58,7 +60,7 @@ fetch_hcp_secrets_and_set_env:
 
             # Break if no secrets are returned
             if [ "$secrets_count" -eq 0 ]; then
-              log_message "No secrets returned in this page. Breaking loop."
+              log_message "No secrets returned on this page. Breaking loop."
               break
             fi
 
@@ -69,6 +71,9 @@ fetch_hcp_secrets_and_set_env:
             # Count the current number of combined secrets
             combined_count=$(jq '. | length' $SECRETS_FILE)
 
+            # Log the combined secret count
+            log_message "Combined secrets so far: $combined_count."
+
             # Break if no new secrets are added
             if [ "$combined_count" -eq "$last_combined_count" ]; then
               log_message "No new secrets added. Breaking loop to avoid duplication."
@@ -77,7 +82,7 @@ fetch_hcp_secrets_and_set_env:
 
             # Break if the next_page_token has not changed
             if [ "$next_page_token" == "$previous_page_token" ]; then
-              log_message "Detected repeated next_page_token. Breaking the loop to prevent infinite requests."
+              log_message "Detected repeated next_page_token ($next_page_token). Breaking loop."
               break
             fi
 
