@@ -820,6 +820,10 @@ cat /etc/default/alloy
 
 rm /etc/default/alloy
 
+rm /var/log/hcp_secrets.log
+
+rm /tmp/hcp_secrets_combined.json
+
 sudo salt '*' state.apply hcp_secrets saltenv=dev
 
 sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
@@ -852,7 +856,13 @@ sudo salt-call state.apply hcp_secrets saltenv=dev
 Check the logs
 
 ```java
+# check the target output file that should be created
+
+cat /etc/default/alloy
+
 cat /var/log/hcp_secrets.log
+
+cat /tmp/hcp_secrets_combined.json | jq
 
 sudo tail -f /var/log/salt/master
 
