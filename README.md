@@ -827,7 +827,70 @@ sudo salt '*' state.apply grafana_alloy.start saltenv=dev
 sudo salt '*' state.apply grafana_alloy.stop saltenv=dev
 ```
 
-If minion does not return
+### If minion does not return or complete
+
+Check Minion Connectivity
+
+```java
+sudo salt '*' test.ping
+```
+
+Run the State Directly on the Minion
+
+Since the master isn't processing the job correctly, you can bypass the master and run the Salt state locally on the minion using `salt-call`
+
+```java
+sudo salt-call state.apply hcp_secrets saltenv=dev
+```
+
+Check the logs
+
+```java
+sudo tail -f /var/log/salt/master
+
+sudo tail -f /var/log/salt/minion
+```
+
+If the Salt master is overloaded, try running the state asynchronously:
+
+```java
+sudo salt '*' state.apply hcp_secrets saltenv=dev --async
+```
+
+This will return a Job ID (JID). Use the JID to track the progress of the job:
+
+```java
+sudo salt-run jobs.lookup_jid <JID>
+```
+
+If the job is large or takes longer than expected, increase the timeout value when applying the state:
+
+```java
+sudo salt '*' state.apply hcp_secrets saltenv=dev --timeout=300
+```
+
+If you suspect the state isn't applying due to connectivity issues, manually verify if the /etc/default/alloy file can be created by running the commands directly:
+
+```java
+HCP_API_TOKEN=$(curl -s --location "https://auth.idp.hashicorp.com/oauth2/token" \
+  --header "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "client_id=$(grep HCP_CLIENT_ID /srv/salt/.env | cut -d '=' -f2)" \
+  --data-urlencode "client_secret=$(grep HCP_CLIENT_SECRET /srv/salt/.env | cut -d '=' -f2)" \
+  --data-urlencode "grant_type=client_credentials" \
+  --data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
+
+curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
+  --header "Authorization: Bearer $HCP_API_TOKEN" > /tmp/hcp_secrets.json
+
+HOSTNAME=$(hostname)
+cat <<EOF > /etc/default/alloy
+HOSTNAME=${HOSTNAME}
+GRAFANA_ALLOY_LOCAL_WRITE=true
+# Add remaining environment variables here...
+EOF
+
+chmod 600 /etc/default/alloy
+```
 
 ```java
 cd /var/cache/salt/minion/proc
@@ -838,6 +901,8 @@ Verify the secrets file is being created
 
 ```java
 cat /etc/default/alloy
+
+ls -lat /etc/default/alloy
 ```
 
 Verify Services:
