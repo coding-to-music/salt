@@ -133,11 +133,40 @@ fetch_hcp_secrets_and_set_env:
         log_message "Total secrets fetched successfully: $total_secrets."
 
         cat <<EOF > /etc/default/alloy
+        ## Path:
+        ## Description: Grafana Alloy settings
+        ## Type:        string
+        ## Default:     ""
+        ## ServiceRestart: alloy
+        #
+        # Command line options for Alloy.
+        #
+        # The configuration file holding the Alloy config.
+        CONFIG_FILE="/etc/alloy/config.alloy"
+
+        # User-defined arguments to pass to the run command.
+        CUSTOM_ARGS=""
+
+        # Restart on system upgrade. Defaults to true.
+        RESTART_ON_UPGRADE=true
+
         HOSTNAME=${HOSTNAME}
         GRAFANA_ALLOY_LOCAL_WRITE=true
-        GRAFANA_LOKI_URL=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_LOKI_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_LOKI_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_LOKI_URL=$(jq -r            '.[] | select(.name=="GRAFANA_LOKI_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_LOKI_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_LOKI_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_PROM_URL=$(jq -r            '.[] | select(.name=="GRAFANA_PROM_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_PROM_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_PROM_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_PROM_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_PROM_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_FLEET_REMOTECFG_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_REMOTECFG_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_FLEET_COLLECTOR_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_COLLECTOR_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_FLEET_PIPELINE_URL=$(jq -r  '.[] | select(.name=="GRAFANA_FLEET_PIPELINE_URL")  | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_FLEET_USERNAME=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_USERNAME")      | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_FLEET_PASSWORD=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_PASSWORD")      | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_TRACES_URL=$(jq -r          '.[] | select(.name=="GRAFANA_TRACES_URL")          | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_TRACES_USERNAME=$(jq -r     '.[] | select(.name=="GRAFANA_TRACES_USERNAME")     | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_TRACES_PASSWORD=$(jq -r     '.[] | select(.name=="GRAFANA_TRACES_PASSWORD")     | .static_version.value // "missing"' $SECRETS_FILE)
+
         # Add remaining environment variables here as needed
         EOF
 

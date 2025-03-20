@@ -810,10 +810,28 @@ Additional Notes
 sudo salt '*' state.apply grafana_alloy.install pillar="{HOSTNAME: server1}"
 ```
 
+Salt state `hcp_secrets.sls` will create file `/etc/default/alloy`
+
+```java
+HOSTNAME=from_grains 
+GRAFANA_ALLOY_LOCAL_WRITE=true
+GRAFANA_LOKI_URL=secret
+GRAFANA_LOKI_USERNAME=secret
+GRAFANA_LOKI_PASSWORD=secret
+GRAFANA_PROM_URL=secret
+GRAFANA_PROM_USERNAME=secret
+GRAFANA_PROM_PASSWORD=secret
+GRAFANA_FLEET_REMOTECFG_URL=secret
+GRAFANA_FLEET_COLLECTOR_URL=secret
+GRAFANA_FLEET_PIPELINE_URL=secret
+GRAFANA_FLEET_USERNAME=secret
+GRAFANA_FLEET_PASSWORD=secret
+GRAFANA_TRACES_URL=secret
+GRAFANA_TRACES_USERNAME=secret
+GRAFANA_TRACES_PASSWORD=secret
+```
 
 Salt commands for Alloy
-
-
 
 ```java
 sudo systemctl restart salt-master
@@ -865,6 +883,8 @@ Check the logs
 cat /etc/default/alloy
 
 cat /tmp/hcp_secrets_combined.json | jq
+
+cat /var/log/hcp_secrets.log
 
 tail /var/log/hcp_secrets.log
 
