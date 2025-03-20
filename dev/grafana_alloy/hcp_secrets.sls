@@ -1,4 +1,4 @@
-# Fetch secrets from HCP Vault, handle retries, and ensure correct pagination
+# Fetch secrets from HCP Vault, handle retries, and ensure proper pagination
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
@@ -14,6 +14,7 @@ fetch_hcp_secrets_and_set_env:
         fetch_all_secrets() {
           local HCP_API_TOKEN
           local next_page_token=""
+          local previous_page_token=""
           local secrets_count=0
           local combined_count=0
           local last_combined_count=0
@@ -41,7 +42,7 @@ fetch_hcp_secrets_and_set_env:
 
           # Fetch secrets with pagination
           while :; do
-            log_message "Page $page - Fetching secrets with next_page_token: $next_page_token"
+            log_message "Page $page - Fetching secrets with next_page_token: '$next_page_token'"
 
             # Make API call to fetch secrets
             response=$(curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
@@ -53,9 +54,8 @@ fetch_hcp_secrets_and_set_env:
             next_page_token=$(echo "$response" | jq -r '.pagination.next_page_token')
             secrets_count=$(echo "$secrets" | jq 'length')
 
-            # Log secrets count for this request
+            # Log the number of secrets fetched
             log_message "Secrets fetched from Page $page: $secrets_count."
-            log_message "Next page token: $next_page_token."
 
             # Combine secrets into the combined file with deduplication
             jq -s 'add | unique_by(.name)' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
@@ -76,6 +76,15 @@ fetch_hcp_secrets_and_set_env:
               log_message "No more pages to fetch. Breaking the loop."
               break
             fi
+
+            # Break if the next_page_token is unchanged
+            if [ "$next_page_token" == "$previous_page_token" ]; then
+              log_message "Next page token is repeated ('${next_page_token}'). Breaking the loop."
+              break
+            fi
+
+            # Update the previous page token
+            previous_page_token=$next_page_token
 
             # Advance to the next page
             page=$((page + 1))
