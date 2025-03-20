@@ -152,25 +152,25 @@ fetch_hcp_secrets_and_set_env:
 
         HOSTNAME=${HOSTNAME}
         GRAFANA_ALLOY_LOCAL_WRITE=true
-        GRAFANA_LOKI_URL=$(jq -r            '.[] | select(.name=="GRAFANA_LOKI_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_LOKI_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_LOKI_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_PROM_URL=$(jq -r            '.[] | select(.name=="GRAFANA_PROM_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_PROM_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_PROM_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_PROM_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_PROM_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_REMOTECFG_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_REMOTECFG_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_COLLECTOR_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_COLLECTOR_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_PIPELINE_URL=$(jq -r  '.[] | select(.name=="GRAFANA_FLEET_PIPELINE_URL")  | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_USERNAME=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_USERNAME")      | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_FLEET_PASSWORD=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_PASSWORD")      | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_TRACES_URL=$(jq -r          '.[] | select(.name=="GRAFANA_TRACES_URL")          | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_TRACES_USERNAME=$(jq -r     '.[] | select(.name=="GRAFANA_TRACES_USERNAME")     | .static_version.value // "missing"' $SECRETS_FILE)
         GRAFANA_TRACES_PASSWORD=$(jq -r     '.[] | select(.name=="GRAFANA_TRACES_PASSWORD")     | .static_version.value // "missing"' $SECRETS_FILE)
-
-        # Add remaining environment variables here as needed
         EOF
 
         chmod 600 /etc/default/alloy
         chown alloy:alloy /etc/default/alloy
         log_message "/etc/default/alloy successfully created."
     - shell: /bin/bash
+
+#        GRAFANA_LOKI_URL=$(jq -r            '.[] | select(.name=="GRAFANA_LOKI_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
+#        GRAFANA_LOKI_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
+#        GRAFANA_LOKI_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
+
+#        GRAFANA_FLEET_REMOTECFG_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_REMOTECFG_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+#        GRAFANA_FLEET_COLLECTOR_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_COLLECTOR_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+#        GRAFANA_FLEET_PIPELINE_URL=$(jq -r  '.[] | select(.name=="GRAFANA_FLEET_PIPELINE_URL")  | .static_version.value // "missing"' $SECRETS_FILE)
+#        GRAFANA_FLEET_USERNAME=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_USERNAME")      | .static_version.value // "missing"' $SECRETS_FILE)
+#        GRAFANA_FLEET_PASSWORD=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_PASSWORD")      | .static_version.value // "missing"' $SECRETS_FILE)
