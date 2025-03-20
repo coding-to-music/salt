@@ -14,10 +14,7 @@ fetch_hcp_secrets_and_set_env:
         fetch_all_secrets() {
           local HCP_API_TOKEN
           local next_page_token=""
-          local previous_page_token=""
           local secrets_count=0
-          local combined_count=0
-          local last_combined_count=0
           local page=1
 
           # Initialize or empty the combined secrets file
@@ -57,7 +54,7 @@ fetch_hcp_secrets_and_set_env:
             # Log the number of secrets fetched
             log_message "Secrets fetched from Page $page: $secrets_count."
 
-            # Combine secrets into the combined file with deduplication
+            # Append secrets to the combined file and deduplicate
             jq -s 'add | unique_by(.name)' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
             mv /tmp/temp_secrets.json $SECRETS_FILE
 
@@ -76,15 +73,6 @@ fetch_hcp_secrets_and_set_env:
               log_message "No more pages to fetch. Breaking the loop."
               break
             fi
-
-            # Break if the next_page_token is unchanged
-            if [ "$next_page_token" == "$previous_page_token" ]; then
-              log_message "Next page token is repeated ('${next_page_token}'). Breaking the loop."
-              break
-            fi
-
-            # Update the previous page token
-            previous_page_token=$next_page_token
 
             # Advance to the next page
             page=$((page + 1))
