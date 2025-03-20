@@ -18,7 +18,7 @@ fetch_hcp_secrets_and_set_env:
           local secrets_count=0
           local combined_count=0
           local last_combined_count=0
-          local iteration=0
+          local page=1
 
           # Initialize or empty the combined secrets file
           echo "[]" > $SECRETS_FILE
@@ -42,8 +42,7 @@ fetch_hcp_secrets_and_set_env:
 
           # Fetch secrets with pagination
           while :; do
-            iteration=$((iteration + 1))
-            log_message "Iteration $iteration - Fetching secrets with next_page_token: $next_page_token"
+            log_message "Page $page - Fetching secrets with next_page_token: $next_page_token"
 
             # Make API call to fetch secrets
             response=$(curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
@@ -56,7 +55,7 @@ fetch_hcp_secrets_and_set_env:
             secrets_count=$(echo "$secrets" | jq 'length')
 
             # Log secrets count for this request
-            log_message "Secrets fetched this iteration: $secrets_count."
+            log_message "Secrets fetched from Page $page: $secrets_count."
             log_message "Next page token: $next_page_token."
 
             # Combine secrets into the combined file
@@ -94,6 +93,9 @@ fetch_hcp_secrets_and_set_env:
             # Update the last combined count and previous page token
             last_combined_count=$combined_count
             previous_page_token=$next_page_token
+
+            # Advance to the next page
+            page=$((page + 1))
 
             # Delay to avoid hitting rate limits
             sleep 1
@@ -133,44 +135,15 @@ fetch_hcp_secrets_and_set_env:
         log_message "Total secrets fetched successfully: $total_secrets."
 
         cat <<EOF > /etc/default/alloy
-        ## Path:
-        ## Description: Grafana Alloy settings
-        ## Type:        string
-        ## Default:     ""
-        ## ServiceRestart: alloy
-        #
-        # Command line options for Alloy.
-        #
-        # The configuration file holding the Alloy config.
-        CONFIG_FILE="/etc/alloy/config.alloy"
-
-        # User-defined arguments to pass to the run command.
-        CUSTOM_ARGS=""
-
-        # Restart on system upgrade. Defaults to true.
-        RESTART_ON_UPGRADE=true
-
         HOSTNAME=${HOSTNAME}
         GRAFANA_ALLOY_LOCAL_WRITE=true
-        GRAFANA_PROM_URL=$(jq -r            '.[] | select(.name=="GRAFANA_PROM_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_PROM_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_PROM_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_PROM_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_PROM_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_TRACES_URL=$(jq -r          '.[] | select(.name=="GRAFANA_TRACES_URL")          | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_TRACES_USERNAME=$(jq -r     '.[] | select(.name=="GRAFANA_TRACES_USERNAME")     | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_TRACES_PASSWORD=$(jq -r     '.[] | select(.name=="GRAFANA_TRACES_PASSWORD")     | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_LOKI_URL=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_LOKI_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_LOKI_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
+        # Add remaining environment variables here as needed
         EOF
 
         chmod 600 /etc/default/alloy
         chown alloy:alloy /etc/default/alloy
         log_message "/etc/default/alloy successfully created."
     - shell: /bin/bash
-
-#        GRAFANA_LOKI_URL=$(jq -r            '.[] | select(.name=="GRAFANA_LOKI_URL")            | .static_version.value // "missing"' $SECRETS_FILE)
-#        GRAFANA_LOKI_USERNAME=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_USERNAME")       | .static_version.value // "missing"' $SECRETS_FILE)
-#        GRAFANA_LOKI_PASSWORD=$(jq -r       '.[] | select(.name=="GRAFANA_LOKI_PASSWORD")       | .static_version.value // "missing"' $SECRETS_FILE)
-
-#        GRAFANA_FLEET_REMOTECFG_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_REMOTECFG_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-#        GRAFANA_FLEET_COLLECTOR_URL=$(jq -r '.[] | select(.name=="GRAFANA_FLEET_COLLECTOR_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-#        GRAFANA_FLEET_PIPELINE_URL=$(jq -r  '.[] | select(.name=="GRAFANA_FLEET_PIPELINE_URL")  | .static_version.value // "missing"' $SECRETS_FILE)
-#        GRAFANA_FLEET_USERNAME=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_USERNAME")      | .static_version.value // "missing"' $SECRETS_FILE)
-#        GRAFANA_FLEET_PASSWORD=$(jq -r      '.[] | select(.name=="GRAFANA_FLEET_PASSWORD")      | .static_version.value // "missing"' $SECRETS_FILE)

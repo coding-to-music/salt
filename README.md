@@ -884,6 +884,11 @@ cat /etc/default/alloy
 
 cat /tmp/hcp_secrets_combined.json | jq
 
+cat /tmp/hcp_secrets_combined.json | jq -r '.[].name'
+
+cat /tmp/hcp_secrets_combined.json | jq -r '.[].name' | grep -E "GRAFANA_PROM_URL|GRAFANA_PROM_USERNAME|GRAFANA_PROM_PASSWORD|GRAFANA_TRACES_URL|GRAFANA_TRACES_USERNAME|GRAFANA_TRACES_PASSWORD"
+
+
 cat /var/log/hcp_secrets.log
 
 tail /var/log/hcp_secrets.log
