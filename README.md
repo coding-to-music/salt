@@ -875,6 +875,15 @@ Since the master isn't processing the job correctly, you can bypass the master a
 sudo salt-call state.apply hcp_secrets saltenv=dev
 ```
 
+Manually read the second page of the secrets
+
+```java
+curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
+  --header "Authorization: Bearer $(cat /path/to/your_token)" \
+  --data-urlencode "page_token=CiRXeUpIVWtGR1FVNUJYMHhQUzBsZlZWTkZVazVCVFVVaVhRPT0=" | jq
+```
+
+
 Check the logs
 
 ```java
@@ -886,8 +895,9 @@ cat /tmp/hcp_secrets_combined.json | jq
 
 cat /tmp/hcp_secrets_combined.json | jq -r '.[].name'
 
-cat /tmp/hcp_secrets_combined.json | jq -r '.[].name' | grep -E "GRAFANA_PROM_URL|GRAFANA_PROM_USERNAME|GRAFANA_PROM_PASSWORD|GRAFANA_TRACES_URL|GRAFANA_TRACES_USERNAME|GRAFANA_TRACES_PASSWORD"
+cat /tmp/hcp_secrets_combined.json | jq -r '.[].name' | sort | uniq -c
 
+cat /tmp/hcp_secrets_combined.json | jq -r '.[].name' | grep -E "GRAFANA_PROM_URL|GRAFANA_PROM_USERNAME|GRAFANA_PROM_PASSWORD|GRAFANA_TRACES_URL|GRAFANA_TRACES_USERNAME|GRAFANA_TRACES_PASSWORD"
 
 cat /var/log/hcp_secrets.log
 
