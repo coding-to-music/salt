@@ -1,4 +1,4 @@
-# Fetch secrets from HCP Vault, handle retries, and handle pagination
+# Fetch secrets from HCP Vault, handle retries, and ensure correct pagination
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
@@ -14,7 +14,6 @@ fetch_hcp_secrets_and_set_env:
         fetch_all_secrets() {
           local HCP_API_TOKEN
           local next_page_token=""
-          local previous_page_token=""
           local secrets_count=0
           local combined_count=0
           local last_combined_count=0
@@ -58,8 +57,8 @@ fetch_hcp_secrets_and_set_env:
             log_message "Secrets fetched from Page $page: $secrets_count."
             log_message "Next page token: $next_page_token."
 
-            # Combine secrets into the combined file
-            jq -s '.[0] + .[1]' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
+            # Combine secrets into the combined file with deduplication
+            jq -s 'add | unique_by(.name)' $SECRETS_FILE <(echo "$secrets") > /tmp/temp_secrets.json
             mv /tmp/temp_secrets.json $SECRETS_FILE
 
             # Check the combined secret count
@@ -72,27 +71,11 @@ fetch_hcp_secrets_and_set_env:
               break
             fi
 
-            # Break if the combined count hasn't increased
-            if [ "$combined_count" -eq "$last_combined_count" ]; then
-              log_message "No new secrets added to the combined file. Breaking to avoid duplication."
-              break
-            fi
-
-            # Break if the `next_page_token` is unchanged
-            if [ "$next_page_token" == "$previous_page_token" ]; then
-              log_message "Next page token is repeated. Breaking the loop."
-              break
-            fi
-
-            # Break if there is no valid next_page_token
+            # Break if no valid next_page_token
             if [ "$next_page_token" == "null" ] || [ -z "$next_page_token" ]; then
               log_message "No more pages to fetch. Breaking the loop."
               break
             fi
-
-            # Update the last combined count and previous page token
-            last_combined_count=$combined_count
-            previous_page_token=$next_page_token
 
             # Advance to the next page
             page=$((page + 1))
@@ -137,10 +120,12 @@ fetch_hcp_secrets_and_set_env:
         cat <<EOF > /etc/default/alloy
         HOSTNAME=${HOSTNAME}
         GRAFANA_ALLOY_LOCAL_WRITE=true
-        GRAFANA_LOKI_URL=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_URL") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_LOKI_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
-        GRAFANA_LOKI_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
-        # Add remaining environment variables here as needed
+        GRAFANA_PROM_URL=$(jq -r '.[] | select(.name=="GRAFANA_PROM_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_PROM_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_PROM_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_PROM_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_PROM_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_TRACES_URL=$(jq -r '.[] | select(.name=="GRAFANA_TRACES_URL") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_TRACES_USERNAME=$(jq -r '.[] | select(.name=="GRAFANA_TRACES_USERNAME") | .static_version.value // "missing"' $SECRETS_FILE)
+        GRAFANA_TRACES_PASSWORD=$(jq -r '.[] | select(.name=="GRAFANA_TRACES_PASSWORD") | .static_version.value // "missing"' $SECRETS_FILE)
         EOF
 
         chmod 600 /etc/default/alloy
