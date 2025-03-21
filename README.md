@@ -840,6 +840,11 @@ sudo systemctl restart salt-minion
 
 cat /etc/default/alloy
 
+./test_hcp_secret.sh
+
+./test_hcp_secret_with_pagination.sh
+
+
 rm /etc/default/alloy
 
 rm /var/log/alloy_config_using_hcp_secrets.log
