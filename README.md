@@ -844,6 +844,7 @@ cat /etc/default/alloy
 
 ./test_hcp_secret_with_pagination.sh
 
+sudo ./test_hcp_secret_with_logging.sh
 
 rm /etc/default/alloy
 
