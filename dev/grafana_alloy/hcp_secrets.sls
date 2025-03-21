@@ -54,7 +54,7 @@ fetch_hcp_secrets_and_set_env:
           log_message "Fetching secret: $secret_name"
           secret_value=$(curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
             --header "Authorization: Bearer $HCP_API_TOKEN" \
-            --data-urlencode "name=$secret_name" | jq -r '.secrets[0].static_version.value // "missing"')
+            --data-urlencode "filter=name==$secret_name" | jq -r '.secrets[0].static_version.value // "missing"')
 
           if [ "$secret_value" == "missing" ]; then
             log_message "Secret $secret_name not found or has no value. Skipping."
