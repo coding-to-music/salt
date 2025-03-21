@@ -810,7 +810,7 @@ Additional Notes
 sudo salt '*' state.apply grafana_alloy.install pillar="{HOSTNAME: server1}"
 ```
 
-Salt state `hcp_secrets.sls` will create file `/etc/default/alloy`
+Salt state `alloy_config_using_hcp_secrets.sls` will create file `/etc/default/alloy`
 
 ```java
 HOSTNAME=from_grains 
@@ -842,13 +842,13 @@ cat /etc/default/alloy
 
 rm /etc/default/alloy
 
-rm /var/log/hcp_secrets.log
+rm /var/log/alloy_config_using_hcp_secrets.log
 
-sudo salt '*' state.apply grafana_alloy.hcp_secrets saltenv=dev
+sudo salt '*' state.apply grafana_alloy.alloy_config_using_hcp_secrets saltenv=dev
 
 cat /etc/default/alloy
 
-cat /var/log/hcp_secrets.log
+cat /var/log/alloy_config_using_hcp_secrets.log
 
 sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
 
@@ -874,7 +874,7 @@ Run the State Directly on the Minion
 Since the master isn't processing the job correctly, you can bypass the master and run the Salt state locally on the minion using `salt-call`
 
 ```java
-sudo salt-call state.apply hcp_secrets saltenv=dev
+sudo salt-call state.apply alloy_config_using_hcp_secrets saltenv=dev
 ```
 
 Manually read the second page of the secrets
@@ -900,45 +900,15 @@ Check the logs
 
 cat /etc/default/alloy
 
-cat /var/log/hcp_secrets.log
+cat /var/log/alloy_config_using_hcp_secrets.log
 
-cat /tmp/hcp_secrets_combined.json | jq
+cat /var/log/alloy_config_using_hcp_secrets.log
 
-cat /tmp/hcp_secrets_combined.json | jq -r '.[].name'
-
-cat /tmp/hcp_secrets_combined.json | jq -r '.[].name' | sort | uniq -c
-
-cat /tmp/hcp_secrets_combined.json | jq -r '.[].name' | grep -E "GRAFANA_PROM_URL|GRAFANA_PROM_USERNAME|GRAFANA_PROM_PASSWORD|GRAFANA_TRACES_URL|GRAFANA_TRACES_USERNAME|GRAFANA_TRACES_PASSWORD"
-
-cat /var/log/hcp_secrets.log
-
-tail /var/log/hcp_secrets.log
-
-cat /tmp/hcp_secrets_combined.json | jq '. | length'
-
-cat /tmp/hcp_secrets_combined.json | jq '.secrets | length'
+tail /var/log/alloy_config_using_hcp_secrets.log
 
 sudo tail -f /var/log/salt/master
 
 sudo tail -f /var/log/salt/minion
-```
-
-If the Salt master is overloaded, try running the state asynchronously:
-
-```java
-sudo salt '*' state.apply hcp_secrets saltenv=dev --async
-```
-
-This will return a Job ID (JID). Use the JID to track the progress of the job:
-
-```java
-sudo salt-run jobs.lookup_jid <JID>
-```
-
-If the job is large or takes longer than expected, increase the timeout value when applying the state:
-
-```java
-sudo salt '*' state.apply hcp_secrets saltenv=dev --timeout=300
 ```
 
 If you suspect the state isn't applying due to connectivity issues, manually verify if the /etc/default/alloy file can be created by running the commands directly:
