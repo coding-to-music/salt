@@ -1,17 +1,23 @@
-# Fetch secrets from HCP Vault and write directly to the output file
+# Fetch all secrets from HCP Vault and write them directly to the output file
 fetch_hcp_secrets_and_set_env:
   cmd.run:
     - name: |
         LOG_FILE="/var/log/hcp_secrets.log"
+        OUTPUT_FILE="/etc/default/alloy"
 
         # Log function to record timestamped entries
         log_message() {
           echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $LOG_FILE
         }
 
-        # Initialize variables
+        # Static secrets list
         HOSTNAME="{{ grains['hostname'] }}"
-        OUTPUT_FILE="/etc/default/alloy"
+        STATIC_ENTRIES=(
+          "HOSTNAME=$HOSTNAME"
+          "GRAFANA_ALLOY_LOCAL_WRITE=true"
+        )
+
+        # Secrets to extract
         SECRETS=(
           "GRAFANA_LOKI_URL"
           "GRAFANA_LOKI_USERNAME"
@@ -45,22 +51,34 @@ fetch_hcp_secrets_and_set_env:
 
         log_message "Successfully fetched HCP API Token."
 
-        # Write static entries to the output file
-        echo "HOSTNAME=$HOSTNAME" > $OUTPUT_FILE
-        echo "GRAFANA_ALLOY_LOCAL_WRITE=true" >> $OUTPUT_FILE
+        # Fetch all secrets from the API
+        log_message "Fetching all secrets from the API..."
+        SECRETS_JSON=$(curl -s --location "https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/2bca58f1-fcf2-4357-a7b2-2624255e4cc8/projects/60812beb-bdf1-4080-81a1-ec4f1f5af9fc/apps/alloy/secrets:open" \
+          --request GET \
+          --header "Authorization: Bearer $HCP_API_TOKEN")
 
-        # Fetch each secret and append to the output file
+        if [ -z "$SECRETS_JSON" ]; then
+          log_message "Failed to fetch secrets from API. Exiting."
+          exit 1
+        fi
+
+        log_message "Successfully fetched all secrets."
+
+        # Write static entries to the output file
+        > $OUTPUT_FILE
+        for entry in "${STATIC_ENTRIES[@]}"; do
+          echo "$entry" >> $OUTPUT_FILE
+        done
+
+        # Extract and write each secret to the output file
         for secret_name in "${SECRETS[@]}"; do
-          log_message "Fetching secret: $secret_name"
-          secret_value=$(curl -s --location "$(grep HCP_SECRETS_URL /srv/salt/.env | cut -d '=' -f2)" \
-            --header "Authorization: Bearer $HCP_API_TOKEN" \
-            --data-urlencode "filter=name==$secret_name" | jq -r '.secrets[0].static_version.value // "missing"')
+          log_message "Extracting secret: $secret_name"
+          secret_value=$(echo "$SECRETS_JSON" | jq -r --arg name "$secret_name" '.secrets[] | select(.name == $name) | .static_version.value // "missing"')
 
           if [ "$secret_value" == "missing" ]; then
-            log_message "Secret $secret_name not found or has no value. Skipping."
-            secret_value="missing"
+            log_message "Secret $secret_name not found. Writing as 'missing'."
           else
-            log_message "Successfully fetched $secret_name."
+            log_message "Successfully extracted $secret_name."
           fi
 
           # Write the secret to the output file
