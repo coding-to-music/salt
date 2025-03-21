@@ -21,35 +21,11 @@ fetch_hcp_secrets_and_configure_alloy:
         ENV_FILE="/srv/salt/.env"
         if [ -f "$ENV_FILE" ]; then
           export $(grep -v '^#' "$ENV_FILE" | xargs)
+          log_message "Loaded environment variables from $ENV_FILE."
         else
           log_message ".env file not found. Exiting."
           exit 1
         fi
-
-        # Static secrets list
-        HOSTNAME="{{ grains['hostname'] }}"
-        STATIC_ENTRIES=(
-          "HOSTNAME=$HOSTNAME"
-          "GRAFANA_ALLOY_LOCAL_WRITE=true"
-        )
-
-        # Secret names to fetch
-        SECRETS=(
-          "GRAFANA_LOKI_URL"
-          "GRAFANA_LOKI_USERNAME"
-          "GRAFANA_LOKI_PASSWORD"
-          "GRAFANA_PROM_URL"
-          "GRAFANA_PROM_USERNAME"
-          "GRAFANA_PROM_PASSWORD"
-          "GRAFANA_FLEET_REMOTECFG_URL"
-          "GRAFANA_FLEET_COLLECTOR_URL"
-          "GRAFANA_FLEET_PIPELINE_URL"
-          "GRAFANA_FLEET_USERNAME"
-          "GRAFANA_FLEET_PASSWORD"
-          "GRAFANA_TRACES_URL"
-          "GRAFANA_TRACES_USERNAME"
-          "GRAFANA_TRACES_PASSWORD"
-        )
 
         # Fetch HCP API Token
         log_message "Fetching HCP API Token..."
@@ -69,11 +45,17 @@ fetch_hcp_secrets_and_configure_alloy:
 
         # Write static entries to the output file
         > $OUTPUT_FILE
-        for entry in "${STATIC_ENTRIES[@]}"; do
-          echo "$entry" >> $OUTPUT_FILE
-        done
+        echo "HOSTNAME={{ grains['hostname'] }}" >> $OUTPUT_FILE
+        echo "GRAFANA_ALLOY_LOCAL_WRITE=true" >> $OUTPUT_FILE
+        log_message "Static entries written to $OUTPUT_FILE."
 
         # Fetch and write each secret value
+        SECRETS=(
+          "GRAFANA_LOKI_URL"
+          "GRAFANA_LOKI_USERNAME"
+          "GRAFANA_LOKI_PASSWORD"
+        )
+
         for secret_name in "${SECRETS[@]}"; do
           log_message "Fetching secret: $secret_name"
           SECRET_VALUE=$(curl -s --location "$HCP_SECRETS_URL/$secret_name" \
@@ -87,7 +69,6 @@ fetch_hcp_secrets_and_configure_alloy:
             log_message "Successfully fetched secret: $secret_name."
           fi
 
-          # Write the secret to the output file
           echo "${secret_name}=${SECRET_VALUE}" >> $OUTPUT_FILE
         done
 
