@@ -3,7 +3,7 @@
 fetch_hcp_secrets_and_configure_alloy:
   cmd.run:
     - name: |
-        LOG_FILE="/var/log/hcp_secrets.log"
+        LOG_FILE="/var/log/alloy_config_using_hcp_secrets.log"
         OUTPUT_FILE="/etc/default/alloy"
 
         # Log function to record timestamped entries
@@ -54,6 +54,17 @@ fetch_hcp_secrets_and_configure_alloy:
           "GRAFANA_LOKI_URL"
           "GRAFANA_LOKI_USERNAME"
           "GRAFANA_LOKI_PASSWORD"
+          "GRAFANA_PROM_URL"
+          "GRAFANA_PROM_USERNAME"
+          "GRAFANA_PROM_PASSWORD"
+          "GRAFANA_FLEET_REMOTECFG_URL"
+          "GRAFANA_FLEET_COLLECTOR_URL"
+          "GRAFANA_FLEET_PIPELINE_URL"
+          "GRAFANA_FLEET_USERNAME"
+          "GRAFANA_FLEET_PASSWORD"
+          "GRAFANA_TRACES_URL"
+          "GRAFANA_TRACES_USERNAME"
+          "GRAFANA_TRACES_PASSWORD"
         )
 
         for secret_name in "${SECRETS[@]}"; do
