@@ -21,7 +21,7 @@ if [ -z "$HCP_CLIENT_ID" ] || [ -z "$HCP_CLIENT_SECRET" ] || [ -z "$HCP_SECRETS_
 fi
 
 # Specify the secret name to fetch
-SECRET_NAME="GRAFANA_PROM_URL"
+SECRET_NAME="GRAFANA_FLEET_PIPELINE_URL"
 
 # Fetch the API Token
 echo "Fetching HCP API Token..."
@@ -46,7 +46,7 @@ SECRET_VALUE=$(curl -s --location "$HCP_SECRETS_URL/$SECRET_NAME" \
   --header "Content-Type: application/json" | jq -r '.secret.value')
 
 if [ -z "$SECRET_VALUE" ] || [ "$SECRET_VALUE" == "null" ]; then
-  echo "Failed to fetch secret $SECRET_NAME. It may not exist or your permissions may be insufficient."
+  echo "Failed to fetch secret $SECRET_NAME. It may not exist or may be inaccessible."
 else
   echo "Successfully fetched secret $SECRET_NAME: $SECRET_VALUE"
 fi
