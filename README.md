@@ -582,7 +582,9 @@ GOTRUE_JWT_SECRET
 ### .env Configuration: Make sure `/srv/salt/.env` includes the following variables:
 
 ```java
-HCP_SECRETS_URL=https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/your-org-ID/projects/your-project-ID/apps/your-app-name/secrets:open
+BAD_HCP_SECRETS_URL=https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/your-org-ID/projects/your-project-ID/apps/your-app-name/secrets:open
+
+HCP_SECRETS_URL=https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJECT_ID/apps/$VLT_APPS_NAME/open
 HCP_CLIENT_ID=your-client-id
 HCP_CLIENT_SECRET=your-client-secret
 ```
