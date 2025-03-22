@@ -41,6 +41,9 @@ fi
 
 # Fetch the secret full json
 echo "Fetching secret full json: $SECRET_NAME"
+echo --location "$HCP_SECRETS_URL/$SECRET_NAME"
+echo --header "Authorization: Bearer $HCP_API_TOKEN"
+
 curl -s --location "$HCP_SECRETS_URL/$SECRET_NAME" \
   --header "Authorization: Bearer $HCP_API_TOKEN" \
   --header "Content-Type: application/json" | jq 
