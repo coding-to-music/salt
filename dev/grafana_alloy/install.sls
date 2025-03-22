@@ -46,10 +46,10 @@ fetch_hcp_secrets_and_set_env:
         HOSTNAME="{{ grains['hostname'] }}" # Include the hostname dynamically
         cat <<EOF > /etc/default/alloy
         HOSTNAME=${HOSTNAME}
-        GRAFANA_LOKI_URL=$(jq      -r '.secrets[] | select(.name=="GRAFANA_LOKI_URL") | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_LOKI_URL=$(jq      -r '.secrets[] | select(.name=="GRAFANA_LOKI_URL")      | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
         GRAFANA_LOKI_USERNAME=$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_USERNAME") | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
         GRAFANA_LOKI_PASSWORD=$(jq -r '.secrets[] | select(.name=="GRAFANA_LOKI_PASSWORD") | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
-        GRAFANA_PROM_URL=$(jq      -r '.secrets[] | select(.name=="GRAFANA_PROM_URL") | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
+        GRAFANA_PROM_URL=$(jq      -r '.secrets[] | select(.name=="GRAFANA_PROM_URL")      | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
         GRAFANA_PROM_USERNAME=$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_USERNAME") | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
         GRAFANA_PROM_PASSWORD=$(jq -r '.secrets[] | select(.name=="GRAFANA_PROM_PASSWORD") | .secret.version.value // "missing"' /tmp/hcp_secrets.json)
         EOF

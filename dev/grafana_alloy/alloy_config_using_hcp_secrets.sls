@@ -67,11 +67,13 @@ fetch_hcp_secrets_and_configure_alloy:
           "GRAFANA_TRACES_PASSWORD"
         )
 
+        echo 
+
         for secret_name in "${SECRETS[@]}"; do
           log_message "Fetching secret: $secret_name"
           SECRET_VALUE=$(curl -s --location "$HCP_SECRETS_URL/$secret_name" \
             --request GET \
-            --header "Authorization: Bearer $HCP_API_TOKEN" | jq -r '.secret.value')
+            --header "Authorization: Bearer $HCP_API_TOKEN" | jq -r '.secret.version.value')
 
           if [ -z "$SECRET_VALUE" ] || [ "$SECRET_VALUE" == "null" ]; then
             log_message "Secret $secret_name not found or empty. Writing as 'missing'."

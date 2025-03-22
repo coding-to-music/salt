@@ -858,6 +858,8 @@ cat /etc/default/alloy
 
 cat /var/log/alloy_config_using_hcp_secrets.log
 
+sudo salt '*' state.apply grafana_alloy.install saltenv=dev  
+
 sudo salt '*' state.apply grafana_alloy.install saltenv=dev  --timeout=120
 
 sudo salt '*' state.apply grafana_alloy.uninstall saltenv=dev
