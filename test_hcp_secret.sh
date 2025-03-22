@@ -39,11 +39,19 @@ else
   echo "Successfully fetched HCP API Token."
 fi
 
+# Fetch the secret full json
+echo "Fetching secret full json: $SECRET_NAME"
+curl -s --location "$HCP_SECRETS_URL/$SECRET_NAME" \
+  --header "Authorization: Bearer $HCP_API_TOKEN" \
+  --header "Content-Type: application/json" | jq 
+
 # Fetch the secret value
 echo "Fetching secret: $SECRET_NAME"
 SECRET_VALUE=$(curl -s --location "$HCP_SECRETS_URL/$SECRET_NAME" \
   --header "Authorization: Bearer $HCP_API_TOKEN" \
-  --header "Content-Type: application/json" | jq -r '.secret.value')
+  --header "Content-Type: application/json" | jq -r '.secret.version.value')
+
+#  --header "Content-Type: application/json" | jq -r '.secret.version.value')
 
 if [ -z "$SECRET_VALUE" ] || [ "$SECRET_VALUE" == "null" ]; then
   echo "Failed to fetch secret $SECRET_NAME. It may not exist or may be inaccessible."
