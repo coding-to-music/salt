@@ -988,6 +988,83 @@ sudo systemctl status node_exporter
 curl http://localhost:9100/metrics
 ```
 
+## Retrieve a single secret value from HashiCorp Cloud Platform (HCP) Vault Secrets
+
+To retrieve a single secret value from HashiCorp Cloud Platform (HCP) Vault Secrets by supplying the secret name, you can use the HCP Vault Secrets API. Below is a step-by-step guide to make such a request using curl. This assumes you have already set up your HCP Vault Secrets environment with an application and secrets.
+
+Prerequisites
+
+HCP Credentials: You need a service principal with a Client ID and Client Secret to authenticate with HCP.
+
+Environment Variables: Set up the following variables:
+
+- `HCP_CLIENT_ID`: Your HCP service principal Client ID.
+- `HCP_CLIENT_SECRET`: Your HCP service principal Client Secret.
+- `HCP_ORG_ID`: Your HCP organization ID.
+- `HCP_PROJECT_ID`: Your HCP project ID.
+- `VLT_APPS_NAME`: The name of the application in HCP Vault Secrets where your secret is stored.
+- `SECRET_NAME`: The name of the specific secret you want to retrieve (e.g., my_secret_name).
+
+You can export these in your terminal like this:
+
+```java
+export HCP_CLIENT_ID="your-client-id"
+export HCP_CLIENT_SECRET="your-client-secret"
+export HCP_ORG_ID="your-org-id"
+export HCP_PROJECT_ID="your-project-id"
+export VLT_APPS_NAME="your-app-name"
+export SECRET_NAME="my_secret_name"
+```
+
+Authentication Token: You’ll need to obtain an API token using your Client ID and Client Secret.
+
+Steps to Retrieve a Single Secret
+
+1. Obtain an API Token
+
+First, authenticate with the HCP API to get a bearer token. Run the following curl command:
+
+```java
+HCP_API_TOKEN=$(curl -s --location --request POST "https://auth.idp.hashicorp.com/oauth2/token" \
+  --header "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "client_id=$HCP_CLIENT_ID" \
+  --data-urlencode "client_secret=$HCP_CLIENT_SECRET" \
+  --data-urlencode "grant_type=client_credentials" \
+  --data-urlencode "audience=https://api.hashicorp.cloud" | jq -r '.access_token')
+```
+
+This command:
+
+- Sends a POST request to the HCP authentication endpoint.
+- Uses your Client ID and Secret to request an access token.
+- Extracts the token using jq and stores it in the HCP_API_TOKEN variable.
+
+2. Request the Specific Secret
+
+Now, use the token to request the value of a single secret by its name. Replace $SECRET_NAME with the name of the secret you want (e.g., my_secret_name):
+
+```java
+curl --silent \
+  --header "Authorization: Bearer $HCP_API_TOKEN" \
+  --header "Content-Type: application/json" \
+  --location "https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJECT_ID/apps/$VLT_APPS_NAME/open/$SECRET_NAME" | jq -r '.secret.value'
+```
+
+This command:
+
+- Makes a GET request to the HCP Vault Secrets API endpoint for opening a specific secret.
+- Specifies the organization, project, application, and secret name in the URL.
+- Uses the bearer token for authorization.
+- Extracts only the secret value using `jq -r '.secret.value'`
+
+Example Output
+
+If your secret `my_secret_name` has the value `my_secret_value`, the output will be:
+
+```java
+my_secret_value
+```
+
 ## Grafana K6
 
 https://grafana.com/docs/k6/latest/set-up/install-k6/#linux
