@@ -73,24 +73,24 @@ fetch_hcp_secrets_and_configure_alloy:
         # Write static entries to the output file
         > $OUTPUT_FILE
 
-        echo ## Path:
-        echo ## Description: Grafana Alloy settings
-        echo ## Type:        string
-        echo ## Default:     ""
-        echo ## ServiceRestart: alloy
-        echo #
-        echo # Command line options for Alloy.
-        echo #
-        echo # The configuration file holding the Alloy config.
-        echo CONFIG_FILE="/etc/alloy/config.alloy"
-        echo 
-        echo # User-defined arguments to pass to the run command.
-        echo CUSTOM_ARGS=""
-        echo 
-        echo # Restart on system upgrade. Defaults to true.
-        echo RESTART_ON_UPGRADE=true
-        echo 
-        echo # Environment variables
+        echo ## Path: >> $OUTPUT_FILE
+        echo ## Description: Grafana Alloy settings >> $OUTPUT_FILE
+        echo ## Type:        string >> $OUTPUT_FILE
+        echo ## Default:     "" >> $OUTPUT_FILE
+        echo ## ServiceRestart: alloy >> $OUTPUT_FILE
+        echo # >> $OUTPUT_FILE
+        echo # Command line options for Alloy. >> $OUTPUT_FILE
+        echo # >> $OUTPUT_FILE
+        echo # The configuration file holding the Alloy config. >> $OUTPUT_FILE
+        echo CONFIG_FILE="/etc/alloy/config.alloy" >> $OUTPUT_FILE
+        echo  >> $OUTPUT_FILE
+        echo # User-defined arguments to pass to the run command. >> $OUTPUT_FILE
+        echo CUSTOM_ARGS="" >> $OUTPUT_FILE
+        echo  >> $OUTPUT_FILE
+        echo # Restart on system upgrade. Defaults to true. >> $OUTPUT_FILE
+        echo RESTART_ON_UPGRADE=true >> $OUTPUT_FILE
+        echo  >> $OUTPUT_FILE
+        echo # Environment variables >> $OUTPUT_FILE
         echo "HOSTNAME={{ grains['hostname'] }}" >> $OUTPUT_FILE
         echo "GRAFANA_ALLOY_LOCAL_WRITE=true" >> $OUTPUT_FILE
         log_message "Static entries written to $OUTPUT_FILE."
