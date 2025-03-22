@@ -1050,6 +1050,15 @@ curl --silent \
   --location "https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJECT_ID/apps/$VLT_APPS_NAME/open/$SECRET_NAME" | jq -r '.secret.version.value'
 ```
 
+Get full JSON to see all available results
+
+```java
+curl --silent \
+  --header "Authorization: Bearer $HCP_API_TOKEN" \
+  --header "Content-Type: application/json" \
+  --location "https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJECT_ID/apps/$VLT_APPS_NAME/open/$SECRET_NAME" | jq 
+```
+
 This command:
 
 - Makes a GET request to the HCP Vault Secrets API endpoint for opening a specific secret.
