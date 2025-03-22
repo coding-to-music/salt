@@ -62,7 +62,7 @@ RESPONSE=$(curl -s --location "$HCP_SECRETS_URL/$SECRET_NAME" \
 
 log_message "API Response: $RESPONSE."
 
-SECRET_VALUE=$(echo "$RESPONSE" | jq -r '.secret.value')
+SECRET_VALUE=$(echo "$RESPONSE" | jq -r '.secret.version.value')
 
 if [ -z "$SECRET_VALUE" ] || [ "$SECRET_VALUE" == "null" ]; then
   log_message "Failed to fetch secret $SECRET_NAME. It may not exist or may be inaccessible."
