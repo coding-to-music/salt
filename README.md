@@ -1047,7 +1047,7 @@ Now, use the token to request the value of a single secret by its name. Replace 
 curl --silent \
   --header "Authorization: Bearer $HCP_API_TOKEN" \
   --header "Content-Type: application/json" \
-  --location "https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJECT_ID/apps/$VLT_APPS_NAME/open/$SECRET_NAME" | jq -r '.secret.value'
+  --location "https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJECT_ID/apps/$VLT_APPS_NAME/open/$SECRET_NAME" | jq -r '.secret.version.value'
 ```
 
 This command:
