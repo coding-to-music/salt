@@ -126,9 +126,10 @@ alloy_service:
     - enable: True
     - watch:
       - cmd: fetch_hcp_secrets_and_configure_alloy
-      - file: /etc/alloy/config.alloy
+      - cmd: replace_config_alloy
     - require:
       - cmd: fetch_hcp_secrets_and_configure_alloy
+      - cmd: replace_config_alloy
 
 # Download and install Node Exporter
 install_node_exporter:
