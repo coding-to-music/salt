@@ -596,6 +596,13 @@ Salt commands for Supabase
 sudo salt '*' state.apply supabase.docker_install saltenv=dev
 sudo salt '*' state.apply supabase.create_user saltenv=dev
 sudo salt '*' state.apply supabase.ownership saltenv=dev
+```
+
+To download the docker images, you need to log into docker hub
+
+```java
+sudo docker login
+```
 
 # optionally clear the log for easier post-run viewing
 rm /var/log/supabase_config_using_hcp_secrets.log
