@@ -597,8 +597,19 @@ sudo salt '*' state.apply supabase.docker_install saltenv=dev
 sudo salt '*' state.apply supabase.create_user saltenv=dev
 sudo salt '*' state.apply supabase.ownership saltenv=dev
 
+# optionally clear the log for easier post-run viewing
+rm /var/log/supabase_config_using_hcp_secrets.log
+
 # then this gets called as often as needed to install and configure supabase using docker
 sudo salt '*' state.apply supabase.supabase_docker_setup saltenv=dev
+```
+
+View the log and .env 
+
+```java
+cat /var/log/supabase_config_using_hcp_secrets.log
+
+cat /opt/supabase/.env
 ```
 
 Apply the State: Apply the updated state using:
