@@ -593,11 +593,11 @@ Salt commands for Supabase
 
 ```java
 # do these first once just to setup supabase_user in linux and install docker and docker-compose
+sudo salt '*' state.apply supabase.docker_install saltenv=dev
 sudo salt '*' state.apply supabase.create_user saltenv=dev
 sudo salt '*' state.apply supabase.ownership saltenv=dev
-sudo salt '*' state.apply supabase.docker_install saltenv=dev
 
-# then this gets called as often as needed
+# then this gets called as often as needed to install and configure supabase using docker
 sudo salt '*' state.apply supabase.supabase_docker_setup saltenv=dev
 ```
 
