@@ -686,7 +686,12 @@ Your Basic Auth username will be service_role and your password will be your ser
 After configuring the data source, you can save and test your connection, and then use the pre-built dashboard to visualize your Supabase metrics.
 
 Or might be:
+
 https://<your-project-ref>.supabase.co/rest/v1/metrics
+
+Authentication
+
+For authentication, you will need to use the Service Role API Key that you obtained earlier. You can set this up in your Prometheus configuration by including the key in the headers of your scrape request.
 
 ```java
 scrape_configs:
@@ -698,6 +703,35 @@ scrape_configs:
     headers:
       Authorization: 'Bearer YOUR_SERVICE_ROLE_API_KEY'
 ```
+
+Add your bearer token using the Custom HTTP Headers section in the Prometheus data source configuration. Here's how to do it:
+
+- In your Prometheus data source settings, scroll down to the Custom HTTP Headers section
+- Click on Add header
+- For the Header field, enter Authorization
+- For the Value field, enter Bearer YOUR_SERVICE_ROLE_API_KEY (replace YOUR_SERVICE_ROLE_API_KEY with your actual Supabase service role key)
+- Click Save & test to verify the connection
+
+Manually test with:
+
+```java
+curl -H "Authorization: Bearer YOUR_SERVICE_ROLE_API_KEY" \
+     https://<your-project-ref>.supabase.co/rest/v1/metrics
+```
+
+May need to set up this table in Supabase
+
+```java
+CREATE TABLE public.metrics (
+    id bigint primary key generated always as identity,
+    metric_name text NOT NULL,
+    metric_value numeric NOT NULL,
+    created_at timestamp with time zone DEFAULT now()
+);
+```
+
+Note:
+- If you are looking for specific metrics related to Supabase performance or usage, you may need to implement custom logging or monitoring solutions, as Supabase does not provide a built-in metrics API by default.
 
 ### To set up a Service Role API Key for your Supabase project, follow these steps:
 
