@@ -661,78 +661,6 @@ Add this line to execute the update state monthly:
 
 ## Grafana Cloud integration for Supabase cloud supabase
 
-To set up the Supabase integration as a data source in Grafana, you need to follow these steps:
-
-- Log in to your Grafana Cloud account.
-- Navigate to the Connections section by clicking on Connections in the left-side menu.
-- Search for "Supabase" in the search bar or browse through the available integrations.
-- Click on the Supabase integration tile.
-- Click on Add new data source or the equivalent button to create a new Supabase connection.
-
-The Supabase integration includes a pre-built dashboard that gives you a comprehensive overview of Supabase performance metrics, supplemented with PostgreSQL metrics Supabase integration for Grafana Cloud.
-
-If you're using the Metrics Endpoint solution for Supabase, you'll need:
-
-- The URL and path to your Supabase project's metrics
-- Basic authentication credentials to access those metrics
-
-For the Metrics Endpoint setup specifically:
-
-Your Scrape URL will be `https://<project-ref>.supabase.co/customer/v1/privileged/metrics`, where `project-ref` is your `project ID`
-
-
-Your Basic Auth username will be service_role and your password will be your service_role key Introducing agentless monitoring for Prometheus in Grafana Cloud
-
-After configuring the data source, you can save and test your connection, and then use the pre-built dashboard to visualize your Supabase metrics.
-
-Or might be:
-
-https://<your-project-ref>.supabase.co/rest/v1/metrics
-
-Authentication
-
-For authentication, you will need to use the Service Role API Key that you obtained earlier. You can set this up in your Prometheus configuration by including the key in the headers of your scrape request.
-
-```java
-scrape_configs:
-  - job_name: 'supabase'
-    metrics_path: '/rest/v1/metrics'
-    scheme: https
-    static_configs:
-      - targets: ['<your-project-ref>.supabase.co']
-    headers:
-      Authorization: 'Bearer YOUR_SERVICE_ROLE_API_KEY'
-```
-
-Add your bearer token using the Custom HTTP Headers section in the Prometheus data source configuration. Here's how to do it:
-
-- In your Prometheus data source settings, scroll down to the Custom HTTP Headers section
-- Click on Add header
-- For the Header field, enter Authorization
-- For the Value field, enter Bearer YOUR_SERVICE_ROLE_API_KEY (replace YOUR_SERVICE_ROLE_API_KEY with your actual Supabase service role key)
-- Click Save & test to verify the connection
-
-Manually test with:
-
-```java
-curl -H "Authorization: Bearer YOUR_SERVICE_ROLE_API_KEY" \
-     https://<your-project-ref>.supabase.co/rest/v1/metrics
-```
-
-May need to set up this table in Supabase
-
-```java
-CREATE TABLE public.metrics (
-    id bigint primary key generated always as identity,
-    metric_name text NOT NULL,
-    metric_value numeric NOT NULL,
-    created_at timestamp with time zone DEFAULT now()
-);
-```
-
-Note:
-- If you are looking for specific metrics related to Supabase performance or usage, you may need to implement custom logging or monitoring solutions, as Supabase does not provide a built-in metrics API by default.
-
 ### To set up a Service Role API Key for your Supabase project, follow these steps:
 
 - Log in to Supabase:
@@ -769,6 +697,37 @@ To configure authentication for your Prometheus-Supabase data source using your 
 - For the username, enter `service_role`
 - For the password, enter your `SUPABASE_SERVICE_ROLE_API_KEY`
 - Click Save & test at the bottom of the page to verify the connection
+
+
+To set up the Supabase integration as a data source in Grafana, you need to follow these steps:
+
+- Log in to your Grafana Cloud account.
+- Navigate to the Connections section by clicking on Connections in the left-side menu.
+- Search for "Supabase" in the search bar or browse through the available integrations.
+- Click on the Supabase integration tile.
+- Click on Add new data source or the equivalent button to create a new Supabase connection.
+
+The Supabase integration includes a pre-built dashboard that gives you a comprehensive overview of Supabase performance metrics, supplemented with PostgreSQL metrics Supabase integration for Grafana Cloud.
+
+If you're using the Metrics Endpoint solution for Supabase, you'll need:
+
+- The URL and path to your Supabase project's metrics
+- Basic authentication credentials to access those metrics
+
+For the Metrics Endpoint setup specifically:
+
+Your Scrape URL will be `https://<project-ref>.supabase.co/customer/v1/privileged/metrics`, where `project-ref` is your `project ID`
+
+
+Your Basic Auth username will be service_role and your password will be your service_role key Introducing agentless monitoring for Prometheus in Grafana Cloud
+
+After configuring the data source, you can save and test your connection, and then use the pre-built dashboard to visualize your Supabase metrics.
+
+This worked
+
+```java
+curl -s -u "service_role:YOUR_SERVICE_ROLE_API_KEY" "https://<project-ref>.supabase.co/customer/v1/privileged/metrics"
+```
 
 ## Grafana integration for self-hosted Supabase
 
