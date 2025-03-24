@@ -659,6 +659,83 @@ Add this line to execute the update state monthly:
 0 2 1 * * salt '*' state.apply supabase.supabase_update saltenv=dev
 ```
 
+## Grafana Cloud integration for Supabase cloud supabase
+
+To set up the Supabase integration as a data source in Grafana, you need to follow these steps:
+
+- Log in to your Grafana Cloud account.
+- Navigate to the Connections section by clicking on Connections in the left-side menu.
+- Search for "Supabase" in the search bar or browse through the available integrations.
+- Click on the Supabase integration tile.
+- Click on Add new data source or the equivalent button to create a new Supabase connection.
+
+The Supabase integration includes a pre-built dashboard that gives you a comprehensive overview of Supabase performance metrics, supplemented with PostgreSQL metrics Supabase integration for Grafana Cloud.
+
+If you're using the Metrics Endpoint solution for Supabase, you'll need:
+
+- The URL and path to your Supabase project's metrics
+- Basic authentication credentials to access those metrics
+
+For the Metrics Endpoint setup specifically:
+
+Your Scrape URL will be `https://<project-ref>.supabase.co/customer/v1/privileged/metrics`, where `project-ref` is your `project ID`
+
+
+Your Basic Auth username will be service_role and your password will be your service_role key Introducing agentless monitoring for Prometheus in Grafana Cloud
+
+After configuring the data source, you can save and test your connection, and then use the pre-built dashboard to visualize your Supabase metrics.
+
+Or might be:
+https://<your-project-ref>.supabase.co/rest/v1/metrics
+
+```java
+scrape_configs:
+  - job_name: 'supabase'
+    metrics_path: '/rest/v1/metrics'
+    scheme: https
+    static_configs:
+      - targets: ['<your-project-ref>.supabase.co']
+    headers:
+      Authorization: 'Bearer YOUR_SERVICE_ROLE_API_KEY'
+```
+
+### To set up a Service Role API Key for your Supabase project, follow these steps:
+
+- Log in to Supabase:
+- Go to the Supabase website and log in to your account.
+- Select Your Project:
+- From your dashboard, select the project for which you want to create the Service Role API Key.
+- Go to Project Settings at the bottom of the Left Sidebar
+- Click on API Settings
+- https://supabase.com/dashboard/project/{project-id}/settings/api
+
+Navigate to API Settings:
+
+- In the left sidebar, click on "Settings."
+- Then, click on "API" under the settings menu.
+- Locate the Service Role API Key:
+
+In the API settings, you will find the "API Keys" section.
+- Here, you will see the "Service Role" key listed. This key has elevated permissions and should be kept secure.
+- Copy the Service Role API Key:
+- Click on the copy icon next to the Service Role API Key to copy it to your clipboard.
+
+Use the Key in Cloud Grafana:
+
+Now that you have the Service Role API Key, you can use it in your Cloud Grafana setup to scrape metrics from Supabase.
+
+Important Note: The Service Role API Key has full access to your database, so make sure to keep it secure and do not expose it in client-side code or public repositories.
+
+To configure authentication for your Prometheus-Supabase data source using your SUPABASE_SERVICE_ROLE_API_KEY, follow these steps:
+- Set the Prometheus Server URL like this: https://<project-ref>.supabase.co/customer/v1/privileged/metrics`, where `project-ref` is your `project ID`
+- Go to Connections in the left-side menu
+- Find your prometheus-supabase data source and click on it to edit
+- Scroll down to the Authentication section
+- Select Basic authentication from the dropdown menu
+- For the username, enter `service_role`
+- For the password, enter your `SUPABASE_SERVICE_ROLE_API_KEY`
+- Click Save & test at the bottom of the page to verify the connection
+
 ## Grafana integration for self-hosted Supabase
 
 - 1. Project Reference ID
