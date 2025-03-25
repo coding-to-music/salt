@@ -738,7 +738,7 @@ To fix / replace the `Project` variable
   - Name: project
   - Type: Query
   - Data source: Select your Supabase Prometheus data source
-  - Query: label_values(supabase_project_ref) (This query fetches all available Supabase project references)
+  - Query: `label_values(supabase_project_ref)` (This query fetches all available Supabase project references)
   - Refresh: On dashboard load
   - Sort: Alphabetical (or your preference)
   - Click Update or Add to save the variable
