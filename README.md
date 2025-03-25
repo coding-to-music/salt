@@ -729,6 +729,22 @@ This worked
 curl -s -u "service_role:YOUR_SERVICE_ROLE_API_KEY" "https://<project-ref>.supabase.co/customer/v1/privileged/metrics"
 ```
 
+### The supplied Integration - Supabase -> Supabase Project Dashboard does not have a functioning Project variable
+
+To fix / replace the `Project` variable
+- Go to the Variables tab
+- If you see the existing "project" variable, you can edit it, or create a new one by clicking + New variable
+- Configure the variable with these settings:
+  - Name: project
+  - Type: Query
+  - Data source: Select your Supabase Prometheus data source
+  - Query: label_values(supabase_project_ref) (This query fetches all available Supabase project references)
+  - Refresh: On dashboard load
+  - Sort: Alphabetical (or your preference)
+  - Click Update or Add to save the variable
+
+This approach is similar to how variables are set up for other data sources in Grafana, as documented in the Prometheus template variables guide.
+
 ## Grafana integration for self-hosted Supabase
 
 - 1. Project Reference ID
