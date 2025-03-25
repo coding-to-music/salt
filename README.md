@@ -561,16 +561,121 @@ sudo salt '*' state.apply root_node_yarn_pnpm.upgrade saltenv=dev
 
 https://supabase.com/docs/guides/self-hosting
 
-https://supabase.com/docs/guides/self-hosting/docker
-
 https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux
 
 https://supabase.com/docs/guides/local-development?queryGroups=package-manager&package-manager=yarn
 
+### Manual Supabase install
 
-Environment Variables in .env:
+https://supabase.com/docs/guides/self-hosting/docker
 
-Secrets like POSTGRES_PASSWORD and GOTRUE_JWT_SECRET are extracted from the API response and written to `/opt/supabase/.env`
+Installing and running Supabase
+
+Follow these steps to start Supabase on your machine:
+
+```java
+# Get the code
+git clone --depth 1 https://github.com/supabase/supabase
+
+# Go to the docker folder
+cd supabase/docker
+
+# Copy the fake env vars
+cp .env.example .env
+
+# Pull the latest images
+docker compose pull
+
+# Start the services (in detached mode)
+docker compose up -d
+```
+
+Note: If you are using rootless docker, edit `.env` and set `DOCKER_SOCKET_LOCATION` to your docker socket location. For example: `/run/user/1000/docker.sock` Otherwise, you will see an error like `container supabase-vector exited (0)`
+
+After all the services have started you can see them running in the background:
+
+```java
+docker compose ps
+```
+
+All of the services should have a status running (healthy). If you see a status like created but not running, try starting that service manually with docker compose start <service-name>.
+
+Your app is now running with default credentials.
+
+Secure your services as soon as possible using the instructions below.
+
+Accessing Supabase Studio#
+
+You can access Supabase Studio through the API gateway on port `8000`. For example: `http://<your-ip>:8000`, or `localhost:8000` if you are running Docker locally.
+
+You will be prompted for a username and password. By default, the credentials are:
+
+```java
+Username: supabase
+Password: this_password_is_insecure_and_should_be_updated
+```
+
+You should change these credentials as soon as possible using the instructions below.
+
+Accessing the APIs
+
+Each of the APIs are available through the same API gateway:
+
+- REST: http://<your-ip>:8000/rest/v1/
+- Auth: http://<your-domain>:8000/auth/v1/
+- Storage: http://<your-domain>:8000/storage/v1/
+- Realtime: http://<your-domain>:8000/realtime/v1/
+
+Accessing your Edge Functions
+
+- Edge Functions are stored in `volumes/functions`. The default setup has a hello Function that you can invoke on `http://<your-domain>:8000/functions/v1/hello`
+- You can add new Functions as `volumes/functions/<FUNCTION_NAME>/index.ts`. Restart the functions service to pick up the changes: `docker compose restart functions --no-deps`
+
+Accessing Postgres
+
+- By default, the Supabase stack runs the Supavisor connection pooler. Supavisor provides efficient management of database connections.
+
+You can connect to the Postgres database using the following methods:
+
+For session-based connections (equivalent to direct Postgres connections):
+
+```java
+psql 'postgres://postgres.your-tenant-id:your-super-secret-and-long-postgres-password@localhost:5432/postgres'
+```
+
+For pooled transactional connections:
+
+```java
+psql 'postgres://postgres.your-tenant-id:your-super-secret-and-long-postgres-password@localhost:6543/postgres'
+```
+
+The default tenant ID is `your-tenant-id`, and the default password is `your-super-secret-and-long-postgres-password`. You should change these as soon as possible using the instructions below.
+
+By default, the database is not accessible from outside the local machine but the pooler is. You can change this by updating the docker-compose.yml file.
+
+Updating your services
+
+For security reasons, we "pin" the versions of each service in the docker-compose file (these versions are updated ~monthly). If you want to update any services immediately, you can do so by updating the version number in the docker compose file and then running docker compose pull. You can find all the latest docker images in the Supabase Docker Hub.
+
+You should update your services frequently to get the latest features and bug fixes and security patches. Note that you will need to restart the services to pick up the changes, which will result in some downtime for your services.
+
+Example
+
+You'll want to update the Studio(Dashboard) frequently to get the latest features and bug fixes. To update the Dashboard:
+
+- Visit the supabase/studio image in the Supabase Docker Hub
+- Find the latest version (tag) number. It will look something like `20241029-46e1e40`
+- Update the image field in the `docker-compose.yml` file to the new version. It should look like this: `image: supabase/studio:20241028-a265374`
+- Run docker compose pull and then `docker compose up -d` to restart the service with the new version.
+
+Securing your services#
+
+While we provided you with some example secrets for getting started, you should NEVER deploy your Supabase setup using the defaults we have provided. Follow all of the steps in this section to ensure you have a secure setup, and then restart all services to pick up the changes.
+
+
+Environment Variables in `.env`:
+
+Secrets like `POSTGRES_PASSWORD` and `GOTRUE_JWT_SECRET` are extracted from the API response and written to `/opt/supabase/.env`
 
 Define these secrets in https://portal.cloud.hashicorp.com/
 
