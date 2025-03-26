@@ -87,20 +87,20 @@ sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 
 ### Server basic setup
 
-- [ ] set hostname
-- [ ] set time zone to NYC
+- [X] set hostname
+- [X] set time zone to NYC
 - [ ] remote mount a drive
 - [ ] setup drive rsync
 
 ### Users
 
-- [ ] install ssh keys
+- [X] install ssh keys
 - [ ] disable root login
-- [ ] create user for myself
+- [X] create user for myself
 - [ ] .bash_aliases for myself
-- [ ] sudo for myself
-- [ ] create user docker
-- [ ] create user grafana
+- [X] sudo for myself
+- [X] create user docker
+- [X] create user grafana
 
 ### cli Software
 
@@ -111,39 +111,39 @@ sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 
 ### systemctl processes
 
-- [ ] node-exporter
-- [ ] grafana alloy
+- [X] node-exporter
+- [X] grafana alloy
 - [ ] ufw firewall
-- [ ] docker
+- [X] docker
 - [ ] fail2ban
 
 ### environment software
 
-- [ ] nvm
-- [ ] node
-- [ ] yarn
-- [ ] pnpm
+- [X] nvm
+- [X] node
+- [X] yarn
+- [X] pnpm
 - [ ] deno
 - [ ] pyenv
-- [ ] python3
+- [X] python3
 
 ### Salt-Stack
-- [ ] Pillars
-- [ ] Grains
-- [ ] Hashicorp Vault
+- [X] Pillars
+- [X] Grains
+- [X] Hashicorp Vault
 
 
 ### databases & more
 
-- [ ] Grafana 
+- [X] Grafana 
     - [ ] Dashboards
     - [ ] Grafana Auth
     - [ ] Data Sources
     - [ ] Users
-- [ ] Grafana Loki
-- [ ] Grafana Tempo
-- [ ] Grafana Mimir
-- [ ] Grafana k6
+- [X] Grafana Loki
+- [X] Grafana Tempo
+- [X] Grafana Mimir
+- [X] Grafana k6
 - [ ] Webserver
     - [X] apache2
         - [ ] Demo website
@@ -161,7 +161,7 @@ sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 - [X] influxDB
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
-- [ ] postgresql
+- [X] postgresql
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] supabase
@@ -176,10 +176,10 @@ sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 - [ ] Redis
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
-- [ ] k3s 
+- [X] k3s 
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
-- [ ] Docker 
+- [X] Docker 
     - [ ] Alloy Collector
     - [ ] Grafana Dashboard(s)
 - [ ] GitHub 
