@@ -574,7 +574,7 @@ Salt commands for Grafana mltp
 
 ```java
 # do these first once just to setup supabase_user in linux and install docker and docker-compose
-sudo salt '*' state.apply mltp.docker_install saltenv=dev
+sudo salt '*' state.apply grafana_mltp.docker_install saltenv=dev
 
 # This init may not be needed since it is all docker
 sudo salt '*' state.apply grafana_mltp.init saltenv=dev
@@ -591,6 +591,14 @@ sudo salt '*' state.apply grafana_mltp.stop saltenv=dev
 ```
 
 ### Verification
+
+```java
+sudo systemctl status salt-master
+sudo systemctl status salt-minion
+
+sudo systemctl restart salt-master
+sudo systemctl restart salt-minion
+```
 
 Check that containers are running:
 
