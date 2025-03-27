@@ -573,6 +573,10 @@ Salt commands for Grafana mltp
 - files/: Optional directory for Jinja-templated files (if customization is needed).
 
 ```java
+# do these first once just to setup supabase_user in linux and install docker and docker-compose
+sudo salt '*' state.apply mltp.docker_install saltenv=dev
+
+# This init may not be needed since it is all docker
 sudo salt '*' state.apply grafana_mltp.init saltenv=dev
 
 sudo salt '*' state.apply grafana_mltp.install saltenv=dev
