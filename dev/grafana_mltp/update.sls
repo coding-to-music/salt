@@ -1,4 +1,4 @@
-# /srv/salt/grafana-mltp/update.sls
+# /srv/salt/grafana-mltp/dev/update.sls
 
 # Ensure working directory exists
 grafana_mltp_dir:

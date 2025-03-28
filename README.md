@@ -159,7 +159,7 @@ If the minion is on a different server from the master, add a new line
 192.168.1.100 salt
 ```
 
-*** YOU MAY NEED TO REBOOT FOR CHANGES TO /etc/hosts TO TAKE EFFECT ***
+*** YOU MAY NEED TO REBOOT FOR CHANGES TO `/etc/hosts` OR THE TEMPLATE TO TAKE EFFECT ***
 
 Restart the minion
 

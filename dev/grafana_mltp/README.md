@@ -21,9 +21,6 @@ sudo salt '*' state.apply grafana_mltp.docker_install saltenv=dev
 sudo salt '*' state.apply grafana_mltp.update saltenv=dev
 
 
-# This init may not be needed since it is all docker
-sudo salt '*' state.apply grafana_mltp.init saltenv=dev
-
 # These need to be created
 sudo salt '*' state.apply grafana_mltp.install saltenv=dev
 
