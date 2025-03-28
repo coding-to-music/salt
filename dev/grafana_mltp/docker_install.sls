@@ -54,3 +54,11 @@ install_docker_compose:
     - require:
       - pkg: install_docker
       - pkg: install_dependencies
+
+# Ensure Docker service is running
+docker_service:
+  service.running:
+    - name: docker
+    - enable: True
+    - require:
+        - pkg: install_docker
