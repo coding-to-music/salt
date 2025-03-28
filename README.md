@@ -182,6 +182,50 @@ sudo salt '*' state.apply influxdb.v2.upgrade saltenv=dev
 sudo salt '*' state.apply webserver.apache2.install saltenv=dev
 ```
 
+### Add Your User to the Docker Group so you can run `docker ps` without `sudo`
+
+Verify the Docker Group Exists: Ensure that the docker group does indeed exist with:
+
+```java
+getent group docker
+```
+
+If the group doesn’t exist (which is rare), create it:
+
+```java
+sudo groupadd docker
+```
+
+Run the following command to add your current user (as determined by whoami) to the Docker group:
+
+```java
+sudo usermod -aG docker $(whoami)
+```
+
+This command appends (-aG) your username to the docker group.
+
+Refresh Your Group Membership For the changes to take effect, you need to log out and log back in. Alternatively, you can start a new session:
+
+```java
+newgrp docker
+```
+
+*** YOU MAY NEED TO REBOOT THE SERVER FOR THE CHANGES TO TAKE EFFECT ***
+
+Just restarting vscode and starting new terminal sessions does not work...
+
+Test the Configuration Once you’ve re-logged in or started a new session, verify your membership by running:
+
+```java
+id -nG
+```
+
+You should see docker listed among your groups. Then test Docker without sudo:
+
+```java
+docker ps
+```
+
 ## Overall task list
 
 ### Server basic setup
