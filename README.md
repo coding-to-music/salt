@@ -24,6 +24,17 @@ git remote add origin git@github.com:coding-to-music/salt.git
 git push -u origin main
 ```
 
+### Other related repos for setups and installation
+
+https://github.com/coding-to-music/saltstack-salt-in-10-minutes
+
+https://github.com/coding-to-music/setup-linux-server-rsync-data-from-old-server
+
+https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
+
+https://github.com/coding-to-music/using-fail2ban-to-harden-linux-server
+
+
 ## Useful commands
 
 ```java
@@ -292,83 +303,4 @@ When to Use Each
 
 - Grains: Use grains for static data that describes the minion itself, such as its location, role, or operating system.  
 - Pillars: Use pillars for dynamic, sensitive, or application-specific data that you want to securely distribute from the master.
-
-
-## Backup hard drive
-
-- [ ] rsync
-
-### Other related repos for setups and installation
-
-https://github.com/coding-to-music/saltstack-salt-in-10-minutes
-
-https://github.com/coding-to-music/setup-linux-server-rsync-data-from-old-server
-
-https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
-
-https://github.com/coding-to-music/using-fail2ban-to-harden-linux-server
-
-## k3s
-
-https://docs.k3s.io/installation
-
-https://computingforgeeks.com/installing-k3s-on-ubuntu-noble-numbat/
-
-https://docs.k3s.io/installation/requirements?os=debian
-
-Manual Install
-
-```java
-```
-
-Salt commands for k3s
-
-```java
-sudo salt '*' state.apply k3s.install saltenv=dev
-
-sudo salt '*' state.apply k3s.uninstall saltenv=dev
-
-sudo salt '*' state.apply k3s.upgrade saltenv=dev
-
-sudo salt '*' state.apply k3s.start saltenv=dev
-
-sudo salt '*' state.apply k3s.stop saltenv=dev
-```
-
-
-## Create User
-
-```java
-sudo salt '*' state.apply user_setup.create_user saltenv=dev
-sudo salt '*' state.apply user_setup.get_bash_files saltenv=dev
-sudo salt '*' state.apply user_setup.setup_ssh_keys saltenv=dev
-sudo salt '*' state.apply user_setup.setup_github saltenv=dev
-```
-
-## non-root-user - Node Yarn pmpm 
-
-Salt commands for non-root-user for Node Yarn pnpm
-
-```java
-sudo salt '*' state.apply non_root_node_yarn_pnpm.install saltenv=dev
-
-sudo salt '*' state.apply non_root_node_yarn_pnpm.upgrade saltenv=dev
-```
-
-## root-user - Node Yarn pmpm 
-
-Salt commands for root-user for Node Yarn pnpm
-
-```java
-sudo salt '*' state.apply root_node_yarn_pnpm.install saltenv=dev
-
-sudo salt '*' state.apply root_node_yarn_pnpm.upgrade saltenv=dev
-```
-
-## Python Application
-
-Manual Install
-
-```java
-```
 
