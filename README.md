@@ -62,8 +62,67 @@ sudo tail -n 20 -f /var/log/salt/minion
 grep -v -e '^#' -e '^$' /etc/salt/master
 grep -v -e '^#' -e '^$' /etc/salt/minion
 ```
+### Set the salt-master config
+
+back up existing salt master config file
+
+```java
+mv /etc/salt/master /etc/salt/master.$(date +%Y-%m-%d_%H-%M-%S)
+```
+
+Edit the salt master config file
+
+```java
+sudo nano /etc/salt/master
+```
+
+Use this content for `/etc/salt/master`
+
+```java
+user: salt
+interface: 0.0.0.0
+log_level: warning
+log_file: /var/log/salt/master
+pki_dir: /etc/salt/pki/master
+cachedir: /var/cache/salt/master
+auto_accept: False
+fileserver_backend:
+  - roots
+file_roots:
+  base:
+     - /srv/salt
+  dev:
+    - /srv/salt/dev
+```
+
+Restart the salt-master
+
+```java
+sudo systemctl restart salt-master
+sudo systemctl status salt-master
+```
 
 ### Let the salt-minion know the address of the salt-master
+
+Check what salt resolves to
+
+```java
+nslookup salt
+```
+
+Expected example Output
+
+```java
+Server:         127.0.0.53
+Address:        127.0.0.53#53
+
+salt    canonical name = localhost.
+Name:   localhost
+Address: 127.0.0.1
+Name:   localhost
+Address: ::1
+```
+
 
 ```java
 sudo nano /etc/hosts
