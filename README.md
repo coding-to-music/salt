@@ -128,6 +128,23 @@ Address: ::1
 sudo nano /etc/hosts
 ```
 
+Or if `/etc/hosts` is managed and you see this content:
+
+```java
+# Your system has configured 'manage_etc_hosts' as True.
+# As a result, if you wish for changes to this file to persist
+# then you will need to either
+# a.) make changes to the master file in /etc/cloud/templates/hosts.debian.tmpl
+# b.) change or remove the value of 'manage_etc_hosts' in
+#     /etc/cloud/cloud.cfg or cloud-config from user-data
+```
+
+Then edit the hosts template
+
+```java
+sudo nano /etc/cloud/templates/hosts.debian.tmpl
+```
+
 If the master and minion are on the same server
 
 Set this existing line to:
@@ -141,6 +158,8 @@ If the minion is on a different server from the master, add a new line
 ```java
 192.168.1.100 salt
 ```
+
+*** YOU MAY NEED TO REBOOT FOR CHANGES TO /etc/hosts TO TAKE EFFECT ***
 
 Restart the minion
 
