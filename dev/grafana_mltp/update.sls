@@ -1,5 +1,9 @@
 # /srv/salt/grafana-mltp/dev/update.sls
 
+# Include the install.sls states
+include:
+  - grafana_mltp.docker_install
+
 # Ensure working directory exists
 grafana_mltp_dir:
   file.directory:
