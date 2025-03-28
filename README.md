@@ -63,7 +63,36 @@ grep -v -e '^#' -e '^$' /etc/salt/master
 grep -v -e '^#' -e '^$' /etc/salt/minion
 ```
 
-## accept keys so the master and minions see each other
+### Let the salt-minion know the address of the salt-master
+
+```java
+sudo nano /etc/hosts
+```
+
+If the master and minion are on the same server
+
+Set this existing line to:
+
+```java
+127.0.0.1 localhost salt
+```
+
+If the minion is on a different server from the master, add a new line
+
+```java
+192.168.1.100 salt
+```
+
+Restart the minion
+
+```java
+sudo systemctl restart salt-minion
+sudo systemctl status salt-minion
+```
+
+This forces your minion to resolve "salt" to the correct IP address of your master.
+
+### accept keys so the master and minions see each other
 
 list accepted keys
 
