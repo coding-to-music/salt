@@ -139,7 +139,14 @@ Running now
                    Container grafana-intro-to-mltp-beyla-requester-1  Started
 ```
 
+
+```java
+salt '*' state.apply grafana-mltp.dev.control stop_docker_compose
+```
+
 # These need to be created
+
+```java
 sudo salt '*' state.apply grafana_mltp.install saltenv=dev
 
 sudo salt '*' state.apply grafana_mltp.uninstall saltenv=dev
