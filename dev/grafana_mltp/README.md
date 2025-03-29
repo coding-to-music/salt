@@ -49,9 +49,58 @@ alloy   829 alloy   11u  IPv6  12737      0t0  TCP *:4317 (LISTEN)
 Next step is to have the server alloy use a different port
 
 Was able to fix this by modifying `/etc/alloy/config.alloy`
+
 ```java
 cat /etc/alloy/config.alloy | grep 43
 // note the otlp_receiver default ports grpc=4317 and http=4318 are instead 4327 and 4328 
+```
+
+```java
+# run again
+sudo salt '*' state.apply grafana_mltp.update saltenv=dev
+```
+
+Got error port 80 was already in use
+
+```java
+Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint grafana-intro-to-mltp-mythical-server-1 (6ea05ecad0639f8b8015a4b973e857a83bb2396526432387a890147fe76909c5): failed to bind host port for 0.0.0.0:80:192.16.0.5:80/tcp: address already in use
+```
+
+salt '*' cmd.run 'ss -tuln | grep :80'
+
+```java
+    tcp   LISTEN 0      511                *:80               *:*
+```
+
+salt '*' cmd.run 'docker ps -a --format "{{.Names}} {{.Ports}}"'
+
+```java
+    grafana-intro-to-mltp-beyla-requester-1 
+    grafana-intro-to-mltp-beyla-recorder-1 
+    grafana-intro-to-mltp-mythical-requester-1 
+    grafana-intro-to-mltp-beyla-server-1 
+    grafana-intro-to-mltp-mythical-recorder-1 0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp
+    grafana-intro-to-mltp-mythical-server-1 
+    grafana-intro-to-mltp-alloy-1 0.0.0.0:4317-4318->4317-4318/tcp, [::]:4317-4318->4317-4318/tcp, 0.0.0.0:6832->6832/tcp, [::]:6832->6832/tcp, 0.0.0.0:12348->12348/tcp, [::]:12348->12348/tcp, 0.0.0.0:55679->55679/tcp, [::]:55679->55679/tcp, 0.0.0.0:12347->12345/tcp, [::]:12347->12345/tcp
+    grafana-intro-to-mltp-k6-1 
+    grafana-intro-to-mltp-mythical-queue-1 4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, [::]:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp, [::]:15672->15672/tcp
+    grafana-intro-to-mltp-pyroscope-1 0.0.0.0:4040->4040/tcp, [::]:4040->4040/tcp
+    grafana-intro-to-mltp-grafana-1 0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+    grafana-intro-to-mltp-mimir-1 
+    grafana-intro-to-mltp-loki-1 
+    grafana-intro-to-mltp-tempo-1 
+    grafana-intro-to-mltp-mythical-database-1 0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+```
+
+Needed to remove webserver apache2
+
+```java
+sudo salt '*' state.apply webserver.apache2.uninstall saltenv=dev
+```
+
+```java
+# run again
+sudo salt '*' state.apply grafana_mltp.update saltenv=dev
 ```
 
 # These need to be created
