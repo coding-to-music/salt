@@ -139,10 +139,53 @@ Running now
                    Container grafana-intro-to-mltp-beyla-requester-1  Started
 ```
 
+### Salt state file `control.sls` to handle stopping and restarting the stack.
+
 
 ```java
 salt '*' state.apply grafana-mltp.dev.control stop_docker_compose
 ```
+
+This runs only the stop_docker_compose state.
+
+Verify:
+
+```java
+salt '*' cmd.run 'docker ps -a --format "{{.Names}} {{.Status}}"'
+```
+
+Restart the Stack
+
+To restart all containers (without stopping them completely):
+
+```java
+salt '*' state.apply grafana-mltp.dev.control restart_docker_compose
+```
+
+Verify:
+
+```java
+salt '*' cmd.run 'docker ps --format "{{.Names}} {{.Status}}"'
+```
+
+Containers should show Up with updated uptime (e.g., Up 5 seconds).
+
+Full Stop and Start
+
+To stop and then restart everything fresh (like a full reboot):
+
+Stop:
+
+```java
+salt '*' state.apply grafana-mltp.dev.control stop_docker_compose
+```
+
+Start (using your existing state):
+
+```java
+salt '*' state.apply grafana-mltp.dev.update
+```
+
 
 # These need to be created
 
