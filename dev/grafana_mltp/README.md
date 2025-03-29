@@ -186,10 +186,29 @@ Start (using your existing state):
 salt '*' state.apply grafana-mltp.dev.update
 ```
 
+This stops all containers:
+
+```java
+sudo salt '*' state.apply grafana_mltp.control saltenv=dev
+```
+
+Start them again
+
+```java
+sudo salt '*' state.apply grafana_mltp.update saltenv=dev
+```
+
+Verify after running:
+
+```java
+sudo salt '*' cmd.run 'docker ps --format "{{.Names}} {{.Status}}"'
+```
 
 # These need to be created
 
 ```java
+sudo salt '*' state.apply grafana_mltp.control saltenv=dev
+
 sudo salt '*' state.apply grafana_mltp.install saltenv=dev
 
 sudo salt '*' state.apply grafana_mltp.uninstall saltenv=dev
