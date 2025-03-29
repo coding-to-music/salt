@@ -6,6 +6,7 @@ Manual Install
 
 https://github.com/grafana/intro-to-mltp
 
+![Introduction To MLTP Architecture Diagram](images/Introduction%20to%20MLTP%20Arch%20Diagram.png)
 
 Salt commands for Grafana mltp
 
@@ -101,6 +102,41 @@ sudo salt '*' state.apply webserver.apache2.uninstall saltenv=dev
 ```java
 # run again
 sudo salt '*' state.apply grafana_mltp.update saltenv=dev
+```
+
+Running now
+
+```java
+                   Container grafana-intro-to-mltp-mimir-1  Created
+                   Container grafana-intro-to-mltp-mythical-queue-1  Running
+                   Container grafana-intro-to-mltp-grafana-1  Running
+                   Container grafana-intro-to-mltp-tempo-1  Created
+                   Container grafana-intro-to-mltp-mythical-recorder-1  Running
+                   Container grafana-intro-to-mltp-mythical-database-1  Running
+                   Container grafana-intro-to-mltp-pyroscope-1  Running
+                   Container grafana-intro-to-mltp-loki-1  Created
+                   Container grafana-intro-to-mltp-beyla-recorder-1  Running
+                   Container grafana-intro-to-mltp-alloy-1  Running
+                   Container grafana-intro-to-mltp-mimir-1  Starting
+                   Container grafana-intro-to-mltp-tempo-1  Starting
+                   Container grafana-intro-to-mltp-loki-1  Starting
+                   Container grafana-intro-to-mltp-mythical-queue-1  Waiting
+                   Container grafana-intro-to-mltp-k6-1  Starting
+                   Container grafana-intro-to-mltp-mythical-server-1  Starting
+                   Container grafana-intro-to-mltp-k6-1  Started
+                   Container grafana-intro-to-mltp-loki-1  Started
+                   Container grafana-intro-to-mltp-mimir-1  Started
+                   Container grafana-intro-to-mltp-mythical-server-1  Started
+                   Container grafana-intro-to-mltp-mythical-queue-1  Waiting
+                   Container grafana-intro-to-mltp-beyla-server-1  Starting
+                   Container grafana-intro-to-mltp-mythical-queue-1  Healthy
+                   Container grafana-intro-to-mltp-tempo-1  Started
+                   Container grafana-intro-to-mltp-beyla-server-1  Started
+                   Container grafana-intro-to-mltp-mythical-queue-1  Healthy
+                   Container grafana-intro-to-mltp-mythical-requester-1  Starting
+                   Container grafana-intro-to-mltp-mythical-requester-1  Started
+                   Container grafana-intro-to-mltp-beyla-requester-1  Starting
+                   Container grafana-intro-to-mltp-beyla-requester-1  Started
 ```
 
 # These need to be created
