@@ -19,24 +19,40 @@ sudo salt '*' state.apply grafana_mltp.docker_install saltenv=dev
 
 # This will download the grafana_mltp docker-compose files from github and yaml files and start them
 sudo salt '*' state.apply grafana_mltp.update saltenv=dev
+```
 
 Needed to do this:
+
+```java
 sudo rm -rf /opt/grafana-mltp/alloy/config.alloy
 sudo touch /opt/grafana-mltp/alloy/config.alloy
+```
 
+```java
 # run again
 sudo salt '*' state.apply grafana_mltp.update saltenv=dev
+```
 
 Got Port conflict the docker compose wants to use port 4317 but the server itself is already running alloy and using port 4317
 
+```java
 sudo lsof -i :4317
+```
 
+Output
+
+```java
 COMMAND PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 alloy   829 alloy   11u  IPv6  12737      0t0  TCP *:4317 (LISTEN)
+```
 
 Next step is to have the server alloy use a different port
 
-
+Was able to fix this by modifying `/etc/alloy/config.alloy`
+```java
+cat /etc/alloy/config.alloy | grep 43
+// note the otlp_receiver default ports grpc=4317 and http=4318 are instead 4327 and 4328 
+```
 
 # These need to be created
 sudo salt '*' state.apply grafana_mltp.install saltenv=dev
